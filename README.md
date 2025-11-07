@@ -1,5 +1,4 @@
 # OnTheBench
----
 >An Android app to follow you favourite NHL teams and players, 
 >complete with up-to-date rosters, games, and standings. Created with 
 >Kotlin and Jetpack Compose.
