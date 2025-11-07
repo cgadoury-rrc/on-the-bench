@@ -8,7 +8,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 /**
- * Purpose - NhlService - an interface to interact with the Nhl Api
+ * Purpose - Nhl Service - an interface to interact with the Nhl Api
  */
 interface NhlService {
 
