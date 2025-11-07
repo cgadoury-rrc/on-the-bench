@@ -13,7 +13,7 @@ import retrofit2.Call
 import retrofit2.Response
 
 /**
- * Purpose - Roster Manager - manage data from the roster api response.
+ * Purpose - Roster Manager - manage NHL roster data
  */
 class RosterManager(teamAbbrev: String) {
 
@@ -41,7 +41,9 @@ class RosterManager(teamAbbrev: String) {
     }
 
     /**
-     *
+     * Purpose - Get Current Roster - gets a NHL team's roster as of the current date
+     * @param teamAbbrev: The team abbreviation to search for (i.e. WPG)
+     * @return Unit
      */
     private fun getCurrentRoster(teamAbbrev: String) {
         val service = NhlApi.retrofitService.getCurrentRoster(teamAbbrev)

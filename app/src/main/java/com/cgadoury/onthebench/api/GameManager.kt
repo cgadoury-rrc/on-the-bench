@@ -11,7 +11,7 @@ import retrofit2.Call
 import retrofit2.Response
 
 /**
- * Purpose - GameManager - manage data from the game api responses
+ * Purpose - Game Manager - manages NHL game data
  */
 class GameManager {
 
@@ -25,6 +25,10 @@ class GameManager {
         getGamesToday()
     }
 
+    /**
+     * Purpose - Get Games Today - gets today's NHL games
+     * @return Unit
+     */
     private fun getGamesToday() {
         val service = NhlApi.retrofitService.getGamesToday()
 

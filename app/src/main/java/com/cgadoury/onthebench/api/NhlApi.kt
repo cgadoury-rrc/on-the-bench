@@ -5,6 +5,9 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
+/**
+ * Purpose - Nhl Api - an object to communicate with the nhl api using moshi and retrofit
+ */
 object NhlApi {
 
     private val BASE_URL = "https://api-web.nhle.com/"

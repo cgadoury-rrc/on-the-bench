@@ -12,7 +12,7 @@ import retrofit2.Response
 import kotlin.collections.emptyList
 
 /**
- *
+ * Purpose - Standing Manager - manages NHL standings data
  */
 class StandingManager {
 
