@@ -6,14 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.cgadoury.onthebench.api.GameManager
 import com.cgadoury.onthebench.api.RosterManager
+import com.cgadoury.onthebench.api.StandingManager
 import com.cgadoury.onthebench.ui.theme.OnTheBenchTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,20 +22,20 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             OnTheBenchTheme {
-                val rosterManager: RosterManager = RosterManager("WPG")
-                val roster = rosterManager.forwardResponse.value
-                print(roster)
+                // Pass to RosterScreen
+                val rosterManager = RosterManager("WPG")
+
+                // Pass to StandingScreen
+                val standingManager = StandingManager()
+
+                // Pass to GameScreen
+                val gameManager = GameManager()
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
-                    LazyColumn() {
-                        items(roster) { player ->
-                            Text(text = player.toString())
-
-                        }
-                    }
                 }
             }
         }

@@ -13,18 +13,29 @@ import retrofit2.Call
 import retrofit2.Response
 
 /**
- * Purpose - Roster Manager - manage the roster api response.
+ * Purpose - Roster Manager - manage data from the roster api response.
  */
 class RosterManager(teamAbbrev: String) {
 
     private var _forwardResponse = mutableStateOf<List<Forward>>(emptyList())
-    private var _defenseResponse = mutableStateOf<List<Defensemen>>(emptyList())
+    private var _defensemenResponse = mutableStateOf<List<Defensemen>>(emptyList())
     private var _goalyResponse = mutableStateOf<List<Goaly>>(emptyList())
 
     val forwardResponse: MutableState<List<Forward>>
         @Composable get() = remember {
             _forwardResponse
         }
+
+    val defensemenResponse: MutableState<List<Defensemen>>
+        @Composable get() = remember {
+            _defensemenResponse
+        }
+
+    val goalyResponse: MutableState<List<Goaly>>
+        @Composable get() = remember {
+            _goalyResponse
+        }
+
     init {
         getCurrentRoster(teamAbbrev = teamAbbrev)
     }
@@ -43,8 +54,13 @@ class RosterManager(teamAbbrev: String) {
                 if (response.isSuccessful) {
                     Log.i("Data", "Roster data is ready to use.")
 
-                    _forwardResponse.value  = response.body()?.forwards ?: emptyList()
+                    _forwardResponse.value = response.body()?.forwards ?: emptyList()
+                    _defensemenResponse.value = response.body()?.defensemen ?: emptyList()
+                    _goalyResponse.value = response.body()?.goalies ?: emptyList()
+
                     Log.i("DataStream", _forwardResponse.value.toString())
+                    Log.i("DataStream", _defensemenResponse.value.toString())
+                    Log.i("DataStream", _goalyResponse.value.toString())
                 }
             }
 

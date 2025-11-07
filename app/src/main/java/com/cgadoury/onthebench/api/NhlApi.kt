@@ -7,7 +7,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 object NhlApi {
 
-    private val BASE_URL = "https://api-web.nhle.com/v1/"
+    private val BASE_URL = "https://api-web.nhle.com/"
 
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
