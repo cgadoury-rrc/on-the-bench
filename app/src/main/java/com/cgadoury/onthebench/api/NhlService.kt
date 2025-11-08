@@ -4,6 +4,7 @@ import com.cgadoury.onthebench.api.model.game.GameData
 import com.cgadoury.onthebench.api.model.roster.RosterData
 import com.cgadoury.onthebench.api.model.standing.StandingData
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -13,7 +14,7 @@ import retrofit2.http.Path
 interface NhlService {
 
     @GET("v1/standings/now")
-    fun getCurrentStandings(): Call<StandingData>
+    suspend fun getCurrentStandings(): Response<StandingData>
 
     @GET("v1/score/now")
     fun getGamesToday(): Call<GameData>

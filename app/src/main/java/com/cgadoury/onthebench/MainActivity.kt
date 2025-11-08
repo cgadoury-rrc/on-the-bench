@@ -11,16 +11,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.cgadoury.onthebench.api.GameManager
 import com.cgadoury.onthebench.api.RosterManager
-import com.cgadoury.onthebench.api.StandingManager
+import com.cgadoury.onthebench.api.StandingsViewModel
 import com.cgadoury.onthebench.destinations.Destination
 import com.cgadoury.onthebench.navigation.BottomNavBar
 import com.cgadoury.onthebench.screens.GamesScreen
@@ -29,6 +27,8 @@ import com.cgadoury.onthebench.screens.TeamsScreen
 import com.cgadoury.onthebench.ui.theme.OnTheBenchTheme
 
 class MainActivity : ComponentActivity() {
+    val standingsViewModel = StandingsViewModel()
+
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +37,6 @@ class MainActivity : ComponentActivity() {
             OnTheBenchTheme {
                 val navController = rememberNavController()
                 val rosterManager = RosterManager("WPG")
-                val standingManager = StandingManager()
                 val gameManager = GameManager()
 
                 Scaffold(
@@ -56,10 +55,13 @@ class MainActivity : ComponentActivity() {
                     NavHost(
                         navController = navController,
                         startDestination = Destination.Teams.route,
-                        modifier = Modifier.padding(10.dp)
+                        modifier = Modifier.padding(paddingValues)
                     ) {
                         composable(Destination.Teams.route) {
-                            TeamsScreen(standingManager = standingManager)
+                            TeamsScreen(
+                                modifier = Modifier,
+                                standingsViewModel = standingsViewModel
+                            )
                         }
 
                         composable(Destination.Players.route) {
