@@ -1,19 +1,21 @@
-package com.cgadoury.onthebench.api
+package com.cgadoury.onthebench.api.model.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cgadoury.onthebench.api.NhlApi
 import com.cgadoury.onthebench.api.model.standing.Standing
 import com.cgadoury.onthebench.api.model.standing.TeamAbbrev
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
-import kotlin.collections.emptyList
 
 /**
  * Purpose - Standing Manager - manages NHL standings data
  */
-class StandingsViewModel: ViewModel() {
+@OptIn(DelicateCoroutinesApi::class)
+class StandingsViewModel(): ViewModel() {
 
     private var _standingsResponse = mutableStateOf<List<Standing?>>(emptyList())
     val standingsResponse: State<List<Standing?>> = _standingsResponse
@@ -32,6 +34,7 @@ class StandingsViewModel: ViewModel() {
      *
      */
     private fun getCurrentStandings() {
+
         viewModelScope.launch {
             _isLoading.value = true
             try {
@@ -39,6 +42,10 @@ class StandingsViewModel: ViewModel() {
                 if (response.isSuccessful) {
                     _standingsResponse.value = response.body()?.standings ?: emptyList()
                     extractTeamAbbreviations()
+
+                    viewModelScope.launch {
+//                        teamDao.insertAllTeams(_standingsResponse.value.filterNotNull())
+                    }
 
                     Log.i("Data", "Standings data is ready to use.")
 

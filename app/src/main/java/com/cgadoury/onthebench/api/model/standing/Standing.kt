@@ -1,169 +1,177 @@
 package com.cgadoury.onthebench.api.model.standing
 
 
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+@Entity(tableName="teams")
 @JsonClass(generateAdapter = true)
 data class Standing(
     @Json(name = "conferenceAbbrev")
-    var conferenceAbbrev: String?,
+    var conferenceAbbrev: String="",
     @Json(name = "conferenceHomeSequence")
-    var conferenceHomeSequence: Int?,
+    var conferenceHomeSequence: Int=0,
     @Json(name = "conferenceL10Sequence")
-    var conferenceL10Sequence: Int?,
+    var conferenceL10Sequence: Int=0,
     @Json(name = "conferenceName")
-    var conferenceName: String?,
+    var conferenceName: String="",
     @Json(name = "conferenceRoadSequence")
-    var conferenceRoadSequence: Int?,
+    var conferenceRoadSequence: Int=0,
     @Json(name = "conferenceSequence")
-    var conferenceSequence: Int?,
+    var conferenceSequence: Int=0,
     @Json(name = "date")
-    var date: String?,
+    var date: String="",
     @Json(name = "divisionAbbrev")
-    var divisionAbbrev: String?,
+    var divisionAbbrev: String="",
     @Json(name = "divisionHomeSequence")
-    var divisionHomeSequence: Int?,
+    var divisionHomeSequence: Int=0,
     @Json(name = "divisionL10Sequence")
-    var divisionL10Sequence: Int?,
+    var divisionL10Sequence: Int=0,
     @Json(name = "divisionName")
-    var divisionName: String?,
+    var divisionName: String="",
     @Json(name = "divisionRoadSequence")
-    var divisionRoadSequence: Int?,
+    var divisionRoadSequence: Int=0,
     @Json(name = "divisionSequence")
-    var divisionSequence: Int?,
+    var divisionSequence: Int=0,
     @Json(name = "gameTypeId")
-    var gameTypeId: Int?,
+    var gameTypeId: Int=0,
     @Json(name = "gamesPlayed")
-    var gamesPlayed: Int?,
+    var gamesPlayed: Int=0,
     @Json(name = "goalAgainst")
-    var goalAgainst: Int?,
+    var goalAgainst: Int=0,
     @Json(name = "goalDifferential")
-    var goalDifferential: Int?,
+    var goalDifferential: Int=0,
     @Json(name = "goalDifferentialPctg")
-    var goalDifferentialPctg: Double?,
+    var goalDifferentialPctg: Double=0.0,
     @Json(name = "goalFor")
-    var goalFor: Int?,
+    var goalFor: Int=0,
     @Json(name = "goalsForPctg")
-    var goalsForPctg: Double?,
+    var goalsForPctg: Double=0.0,
     @Json(name = "homeGamesPlayed")
-    var homeGamesPlayed: Int?,
+    var homeGamesPlayed: Int=0,
     @Json(name = "homeGoalDifferential")
-    var homeGoalDifferential: Int?,
+    var homeGoalDifferential: Int=0,
     @Json(name = "homeGoalsAgainst")
-    var homeGoalsAgainst: Int?,
+    var homeGoalsAgainst: Int=0,
     @Json(name = "homeGoalsFor")
-    var homeGoalsFor: Int?,
+    var homeGoalsFor: Int=0,
     @Json(name = "homeLosses")
-    var homeLosses: Int?,
+    var homeLosses: Int=0,
     @Json(name = "homeOtLosses")
-    var homeOtLosses: Int?,
+    var homeOtLosses: Int=0,
     @Json(name = "homePoints")
-    var homePoints: Int?,
+    var homePoints: Int=0,
     @Json(name = "homeRegulationPlusOtWins")
-    var homeRegulationPlusOtWins: Int?,
+    var homeRegulationPlusOtWins: Int=0,
     @Json(name = "homeRegulationWins")
-    var homeRegulationWins: Int?,
+    var homeRegulationWins: Int=0,
     @Json(name = "homeTies")
-    var homeTies: Int?,
+    var homeTies: Int=0,
     @Json(name = "homeWins")
-    var homeWins: Int?,
+    var homeWins: Int=0,
     @Json(name = "l10GamesPlayed")
-    var l10GamesPlayed: Int?,
+    var l10GamesPlayed: Int=0,
     @Json(name = "l10GoalDifferential")
-    var l10GoalDifferential: Int?,
+    var l10GoalDifferential: Int=0,
     @Json(name = "l10GoalsAgainst")
-    var l10GoalsAgainst: Int?,
+    var l10GoalsAgainst: Int=0,
     @Json(name = "l10GoalsFor")
-    var l10GoalsFor: Int?,
+    var l10GoalsFor: Int=0,
     @Json(name = "l10Losses")
-    var l10Losses: Int?,
+    var l10Losses: Int=0,
     @Json(name = "l10OtLosses")
-    var l10OtLosses: Int?,
+    var l10OtLosses: Int=0,
     @Json(name = "l10Points")
-    var l10Points: Int?,
+    var l10Points: Int=0,
     @Json(name = "l10RegulationPlusOtWins")
-    var l10RegulationPlusOtWins: Int?,
+    var l10RegulationPlusOtWins: Int=0,
     @Json(name = "l10RegulationWins")
-    var l10RegulationWins: Int?,
+    var l10RegulationWins: Int=0,
     @Json(name = "l10Ties")
-    var l10Ties: Int?,
+    var l10Ties: Int=0,
     @Json(name = "l10Wins")
-    var l10Wins: Int?,
+    var l10Wins: Int=0,
     @Json(name = "leagueHomeSequence")
-    var leagueHomeSequence: Int?,
+    var leagueHomeSequence: Int=0,
     @Json(name = "leagueL10Sequence")
-    var leagueL10Sequence: Int?,
+    var leagueL10Sequence: Int=0,
     @Json(name = "leagueRoadSequence")
-    var leagueRoadSequence: Int?,
+    var leagueRoadSequence: Int=0,
     @Json(name = "leagueSequence")
-    var leagueSequence: Int?,
+    var leagueSequence: Int=0,
     @Json(name = "losses")
-    var losses: Int?,
+    var losses: Int=0,
     @Json(name = "otLosses")
-    var otLosses: Int?,
+    var otLosses: Int=0,
     @Json(name = "placeName")
-    var placeName: PlaceName?,
+    var placeName: PlaceName = PlaceName("", ""),
     @Json(name = "pointPctg")
-    var pointPctg: Double?,
+    var pointPctg: Double=0.0,
     @Json(name = "points")
-    var points: Int?,
+    var points: Int=0,
     @Json(name = "regulationPlusOtWinPctg")
-    var regulationPlusOtWinPctg: Double?,
+    var regulationPlusOtWinPctg: Double=0.0,
     @Json(name = "regulationPlusOtWins")
-    var regulationPlusOtWins: Int?,
+    var regulationPlusOtWins: Int=0,
     @Json(name = "regulationWinPctg")
-    var regulationWinPctg: Double?,
+    var regulationWinPctg: Double=0.0,
     @Json(name = "regulationWins")
-    var regulationWins: Int?,
+    var regulationWins: Int=0,
     @Json(name = "roadGamesPlayed")
-    var roadGamesPlayed: Int?,
+    var roadGamesPlayed: Int=0,
     @Json(name = "roadGoalDifferential")
-    var roadGoalDifferential: Int?,
+    var roadGoalDifferential: Int=0,
     @Json(name = "roadGoalsAgainst")
-    var roadGoalsAgainst: Int?,
+    var roadGoalsAgainst: Int=0,
     @Json(name = "roadGoalsFor")
-    var roadGoalsFor: Int?,
+    var roadGoalsFor: Int=0,
     @Json(name = "roadLosses")
-    var roadLosses: Int?,
+    var roadLosses: Int=0,
     @Json(name = "roadOtLosses")
-    var roadOtLosses: Int?,
+    var roadOtLosses: Int=0,
     @Json(name = "roadPoints")
-    var roadPoints: Int?,
+    var roadPoints: Int=0,
     @Json(name = "roadRegulationPlusOtWins")
-    var roadRegulationPlusOtWins: Int?,
+    var roadRegulationPlusOtWins: Int=0,
     @Json(name = "roadRegulationWins")
-    var roadRegulationWins: Int?,
+    var roadRegulationWins: Int=0,
     @Json(name = "roadTies")
-    var roadTies: Int?,
+    var roadTies: Int=0,
     @Json(name = "roadWins")
-    var roadWins: Int?,
+    var roadWins: Int=0,
     @Json(name = "seasonId")
-    var seasonId: Int?,
+    var seasonId: Int=0,
     @Json(name = "shootoutLosses")
-    var shootoutLosses: Int?,
+    var shootoutLosses: Int=0,
     @Json(name = "shootoutWins")
-    var shootoutWins: Int?,
+    var shootoutWins: Int=0,
     @Json(name = "streakCode")
-    var streakCode: String?,
+    var streakCode: String="",
     @Json(name = "streakCount")
-    var streakCount: Int?,
+    var streakCount: Int=0,
+
+    @PrimaryKey
     @Json(name = "teamAbbrev")
-    var teamAbbrev: TeamAbbrev?,
+    var teamAbbrev: TeamAbbrev = TeamAbbrev(""),
+
+    @Ignore
     @Json(name = "teamCommonName")
-    var teamCommonName: TeamCommonName?,
+    var teamCommonName: TeamCommonName = TeamCommonName("", ""),
     @Json(name = "teamLogo")
-    var teamLogo: String?,
+    var teamLogo: String="",
     @Json(name = "teamName")
-    var teamName: TeamName?,
+    var teamName: TeamName = TeamName("", ""),
     @Json(name = "ties")
-    var ties: Int?,
+    var ties: Int=0,
     @Json(name = "waiversSequence")
-    var waiversSequence: Int?,
+    var waiversSequence: Int=0,
     @Json(name = "wildcardSequence")
-    var wildcardSequence: Int?,
+    var wildcardSequence: Int=0,
     @Json(name = "winPctg")
-    var winPctg: Double?,
+    var winPctg: Double=0.0,
     @Json(name = "wins")
-    var wins: Int?
+    var wins: Int=0
 )

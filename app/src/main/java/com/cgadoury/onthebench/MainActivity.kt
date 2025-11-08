@@ -16,14 +16,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
 import com.cgadoury.onthebench.api.GameManager
 import com.cgadoury.onthebench.api.RosterManager
-import com.cgadoury.onthebench.api.StandingsViewModel
+import com.cgadoury.onthebench.api.model.viewmodel.StandingsViewModel
 import com.cgadoury.onthebench.api.model.standing.Standing
+import com.cgadoury.onthebench.db.AppDatabase
+import com.cgadoury.onthebench.db.TeamDao
 import com.cgadoury.onthebench.destinations.Destination
 import com.cgadoury.onthebench.navigation.BottomNavBar
 import com.cgadoury.onthebench.screens.GamesScreen
@@ -33,7 +37,9 @@ import com.cgadoury.onthebench.screens.TeamsScreen
 import com.cgadoury.onthebench.ui.theme.OnTheBenchTheme
 
 class MainActivity : ComponentActivity() {
-    val standingsViewModel = StandingsViewModel()
+    private val standingsViewModel by lazy {
+        StandingsViewModel()
+    }
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {

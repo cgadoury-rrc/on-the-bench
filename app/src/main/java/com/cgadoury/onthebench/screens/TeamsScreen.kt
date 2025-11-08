@@ -35,7 +35,7 @@ import coil3.svg.SvgDecoder
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
-import com.cgadoury.onthebench.api.StandingsViewModel
+import com.cgadoury.onthebench.api.model.viewmodel.StandingsViewModel
 import com.cgadoury.onthebench.api.model.standing.Standing
 
 /**
@@ -89,7 +89,7 @@ fun TeamsCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         onClick = {
-            navController.navigate("teamDetail/${team}")
+            navController.navigate("teamDetail")
         }
     ) {
         Row(
