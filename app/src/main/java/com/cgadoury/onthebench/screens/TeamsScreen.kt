@@ -38,7 +38,12 @@ import com.cgadoury.onthebench.api.StandingsViewModel
 import com.cgadoury.onthebench.api.model.standing.Standing
 
 /**
- *
+ * Purpose - Teams Screen - display NHL teams for the current season
+ * @author Colton Gadoury
+ * @param modifier: The modifier for the screen
+ * @param standingsViewModel: The view model where initial team data is retrieved
+ * @constructor Emits a new Teams Screen composable
+ * @return Unit
  */
 @Composable
 fun TeamsScreen(
@@ -53,8 +58,8 @@ fun TeamsScreen(
     LazyColumn {
         items(teams) { team ->
             TeamCard(
-                team = team,
-                modifier = modifier.padding(5.dp)
+                modifier = modifier.padding(5.dp),
+                team = team
             )
         }
     }
@@ -62,12 +67,17 @@ fun TeamsScreen(
 }
 
 /**
- *
+ * Purpose - Team Card - display a team
+ * @author Colton Gadoury
+ * @param modifier: The modifier
+ * @param team: The team to display
+ * @constructor Emits a new Team Card composable
+ * @return Unit
  */
 @Composable
 fun TeamCard(
-    team: Standing?,
-    modifier: Modifier
+    modifier: Modifier,
+    team: Standing?
 ) {
     Card(
         modifier = modifier,
