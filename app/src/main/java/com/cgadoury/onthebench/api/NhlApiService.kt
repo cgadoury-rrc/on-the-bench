@@ -11,7 +11,7 @@ import retrofit2.http.Path
 /**
  * Purpose - Nhl Service - an interface to interact with the Nhl Api
  */
-interface NhlService {
+interface NhlApiService {
 
     @GET("v1/standings/now")
     suspend fun getCurrentStandings(): Response<StandingData>
