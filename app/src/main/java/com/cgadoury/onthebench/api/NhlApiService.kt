@@ -14,7 +14,7 @@ import retrofit2.http.Path
 interface NhlApiService {
 
     @GET("v1/standings/now")
-    suspend fun getCurrentStandings(): Response<StandingData>
+    fun getCurrentStandings(): Response<StandingData>
 
     @GET("v1/score/now")
     fun getGamesToday(): Call<GameData>

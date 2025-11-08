@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
@@ -56,7 +57,8 @@ fun TeamsScreen(
         modifier = modifier.fillMaxSize()
     )
 
-    val teams = standingsViewModel.standingsResponse.value
+    val teams by standingsViewModel.standingsResponse
+
     LazyColumn {
         items(teams) { team ->
             TeamsCard(
@@ -89,7 +91,7 @@ fun TeamsCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         onClick = {
-            navController.navigate("teamDetail")
+            navController.navigate("teamDetail/${team?.teamAbbrev?.default}")
         }
     ) {
         Row(

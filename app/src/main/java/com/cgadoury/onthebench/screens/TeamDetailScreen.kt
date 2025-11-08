@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -11,6 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -29,28 +31,19 @@ import com.cgadoury.onthebench.api.model.standing.Standing
 fun TeamDetailScreen(
     modifier: Modifier,
     team: Standing,
-    standingsViewModel: StandingsViewModel
 ) {
     Box(
         modifier
+            .fillMaxSize()
     ) {
         Column {
-            Text(
-                modifier = Modifier
-                    .padding(vertical = 5.dp)
-                    .fillMaxWidth(),
-                text = team.teamName.toString(),
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
             AsyncImage(
                 modifier = Modifier
-                    .size(65.dp)
+                    .size(85.dp)
                     .clip(CircleShape)
                     .background(Color.Gray.copy(alpha = 0.1f))
-                    .padding(4.dp),
+                    .padding(4.dp)
+                    .align(Alignment.CenterHorizontally),
                 model = ImageRequest.Builder(
                     LocalContext.current
                 ).data(team.teamLogo)
@@ -60,11 +53,19 @@ fun TeamDetailScreen(
                     LocalContext.current
                 ).components {
                     add(SvgDecoder.Factory())
-                }
-                    .build()
+                }.build()
             )
 
-            Log.i("Team Details", team.toString())
+            Text(
+                modifier = Modifier
+                    .padding(vertical = 5.dp)
+                    .fillMaxWidth(),
+                text = team.teamName.default ?: "No Name Found",
+                style = MaterialTheme.typography.headlineMedium,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
         }
     }
 

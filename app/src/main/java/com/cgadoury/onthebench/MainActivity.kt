@@ -1,6 +1,7 @@
 package com.cgadoury.onthebench
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -22,7 +23,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.cgadoury.onthebench.api.GameManager
 import com.cgadoury.onthebench.api.NhlApi
-import com.cgadoury.onthebench.api.NhlApiService
 import com.cgadoury.onthebench.api.RosterManager
 import com.cgadoury.onthebench.viewmodel.StandingsViewModel
 import com.cgadoury.onthebench.api.model.standing.Standing
@@ -36,10 +36,13 @@ import com.cgadoury.onthebench.screens.PlayersScreen
 import com.cgadoury.onthebench.screens.TeamDetailScreen
 import com.cgadoury.onthebench.screens.TeamsScreen
 import com.cgadoury.onthebench.ui.theme.OnTheBenchTheme
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -95,11 +98,20 @@ class MainActivity : ComponentActivity() {
                                 mutableStateOf<Standing?>(null)
                             }
 
+                            val teamAbbrev = navBackStackEntry.arguments?.getString("teamAbbrev")
+
+                            Log.i("teamAbbrev",teamAbbrev.toString())
+
+                            GlobalScope.launch {
+                                if (teamAbbrev != null) {
+                                    team = teamRepository.getTeamByAbbreviation(teamAbbrev = teamAbbrev)
+                                }
+                            }
+
                             team?.let {
                                 TeamDetailScreen(
                                     modifier = Modifier,
-                                    team = team!!,
-                                    standingsViewModel = standingsViewModel
+                                    team = team!!
                                 )
                             }
                         }

@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.cgadoury.onthebench.api.model.standing.Standing
+import com.cgadoury.onthebench.api.model.standing.TeamAbbrev
 
 @Dao
 interface TeamDao {
@@ -16,6 +17,9 @@ interface TeamDao {
     @Delete
     suspend fun delete(team: Standing)
 
-    @Query("SELECT * FROM TEAMS")
+    @Query("SELECT * FROM teams")
     fun getAllTeams() : List<Standing>
+
+    @Query("SELECT * FROM teams WHERE teamAbbrev = :abbrev")
+    fun getTeamByAbbreviation(abbrev: String): Standing
 }
