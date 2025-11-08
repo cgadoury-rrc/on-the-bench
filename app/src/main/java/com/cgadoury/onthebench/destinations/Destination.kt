@@ -10,4 +10,6 @@ open class Destination(val route: String) {
     object Players: Destination("players")
 
     object Games: Destination("games")
+
+    object TeamDetail: Destination("teamDetail/{team}")
 }

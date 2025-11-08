@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil3.svg.SvgDecoder
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
@@ -48,7 +49,8 @@ import com.cgadoury.onthebench.api.model.standing.Standing
 @Composable
 fun TeamsScreen(
     modifier: Modifier,
-    standingsViewModel: StandingsViewModel
+    standingsViewModel: StandingsViewModel,
+    navController: NavController
 ){
     Box(
         modifier = modifier.fillMaxSize()
@@ -57,13 +59,13 @@ fun TeamsScreen(
     val teams = standingsViewModel.standingsResponse.value
     LazyColumn {
         items(teams) { team ->
-            TeamCard(
+            TeamsCard(
                 modifier = modifier.padding(5.dp),
-                team = team
+                team = team,
+                navController = navController
             )
         }
     }
-
 }
 
 /**
@@ -75,16 +77,20 @@ fun TeamsScreen(
  * @return Unit
  */
 @Composable
-fun TeamCard(
+fun TeamsCard(
     modifier: Modifier,
-    team: Standing?
+    team: Standing?,
+    navController: NavController
 ) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(10.dp),
         border = BorderStroke(1.dp, Color.Gray),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        onClick = {
+            navController.navigate("teamDetail/${team}")
+        }
     ) {
         Row(
             modifier = modifier
