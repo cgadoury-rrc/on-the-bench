@@ -6,5 +6,5 @@ import com.cgadoury.onthebench.api.model.standing.TeamAbbrev
 interface TeamRepository {
     suspend fun getAllTeams(): List<Standing>
     fun insertAllTeams(teams: List<Standing>): Unit
-    fun getTeamByAbbreviation(teamAbbrev: String): Standing
+    suspend fun getTeamByAbbreviation(teamAbbrev: String): Standing
 }

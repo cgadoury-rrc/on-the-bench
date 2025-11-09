@@ -36,28 +36,28 @@ import coil3.svg.SvgDecoder
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
-import com.cgadoury.onthebench.viewmodel.StandingsViewModel
+import com.cgadoury.onthebench.viewmodel.TeamsViewModel
 import com.cgadoury.onthebench.api.model.standing.Standing
 
 /**
  * Purpose - Teams Screen - display NHL teams for the current season
  * @author Colton Gadoury
  * @param modifier: The modifier for the screen
- * @param standingsViewModel: The view model where initial team data is retrieved
+ * @param teamsViewModel: The view model where initial team data is retrieved
  * @constructor Emits a new Teams Screen composable
  * @return Unit
  */
 @Composable
 fun TeamsScreen(
     modifier: Modifier,
-    standingsViewModel: StandingsViewModel,
+    teamsViewModel: TeamsViewModel,
     navController: NavController
 ){
     Box(
         modifier = modifier.fillMaxSize()
     )
 
-    val teams by standingsViewModel.standingsResponse
+    val teams by teamsViewModel.standingsResponse
 
     LazyColumn {
         items(teams) { team ->
@@ -135,9 +135,9 @@ fun TeamsCard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Text(text = "W: ${team?.wins} ")
-                    Text(text = "L: ${team?.losses} ")
-                    Text(text = "OTL: ${team?.otLosses}")
+                    Text(text = "W: ${team?.l10Wins} ")
+                    Text(text = "L: ${team?.l10Losses} ")
+                    Text(text = "OTL: ${team?.l10OtLosses}")
                 }
             }
         }

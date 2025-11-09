@@ -13,12 +13,15 @@ import kotlinx.coroutines.launch
  * Purpose - Standing Manager - manages NHL standings data
  */
 @OptIn(DelicateCoroutinesApi::class)
-class StandingsViewModel(
+class TeamsViewModel(
     private val teamRepository: TeamRepository
 ): ViewModel() {
 
     private var _standingsResponse = mutableStateOf<List<Standing>>(emptyList())
     val standingsResponse: State<List<Standing>> = _standingsResponse
+
+    private var _team = mutableStateOf<Standing?>(Standing())
+    val team: State<Standing?> = _team
 
     private var _isLoading = mutableStateOf<Boolean>(false)
     val isLoading: State<Boolean> = _isLoading
@@ -33,6 +36,12 @@ class StandingsViewModel(
     private fun loadTeams() {
         viewModelScope.launch {
             _standingsResponse.value = teamRepository.getAllTeams()
+        }
+    }
+
+    fun getTeamByAbbreviation(teamAbbrev: String) {
+        viewModelScope.launch {
+            _team.value = teamRepository.getTeamByAbbreviation(teamAbbrev = teamAbbrev)
         }
     }
 }

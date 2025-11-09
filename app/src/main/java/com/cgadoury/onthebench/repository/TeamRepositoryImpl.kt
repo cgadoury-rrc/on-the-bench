@@ -54,6 +54,6 @@ class TeamRepositoryImpl(
      * @param teamAbbrev: The abbreviation to search for
      * @return Unit
      */
-    override fun getTeamByAbbreviation(teamAbbrev: String): Standing =
-        teamDao.getTeamByAbbreviation(teamAbbrev)
+    override suspend fun getTeamByAbbreviation(teamAbbrev: String): Standing =
+        withContext(Dispatchers.IO) { teamDao.getTeamByAbbreviation(teamAbbrev) }
 }
