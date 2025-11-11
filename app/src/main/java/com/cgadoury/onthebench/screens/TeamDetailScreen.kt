@@ -132,7 +132,7 @@ fun OverallStatCard(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             LargeStatPctgCard(Modifier.weight(1f), "Win Pctg.", teamData.winPctg)
-            LargeStatPctgCard(Modifier.weight(1f), "Goal Share", teamData.goalDifferentialPctg)
+            LargeStatGoalDiffCard(Modifier.weight(1f), "Goal Diff.", teamData.goalDifferential)
             LargeStatStreakCard(Modifier.weight(1f), "Streak", teamData.streakCode + teamData.streakCount)
         }
     }
@@ -205,6 +205,42 @@ fun LargeStatStreakCard(
         ) {
             Text(
                 text = value,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth(),
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@Composable
+fun LargeStatGoalDiffCard(
+    modifier: Modifier,
+    label: String,
+    value: Int
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = label,
+            fontSize = 12.sp,
+            color = Color.Gray
+        )
+        Card(
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = if (value > 0) Color(0xFF4C70AF) else Color(0xFFF44336)
+            )
+        ) {
+            Text(
+                text = if (value > 0) "+${value}" else value.toString(),
                 modifier = Modifier
                     .padding(20.dp)
                     .fillMaxWidth(),
