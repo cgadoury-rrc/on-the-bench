@@ -36,7 +36,7 @@ import coil3.svg.SvgDecoder
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
-import com.cgadoury.onthebench.viewmodel.TeamsViewModel
+import com.cgadoury.onthebench.mvvm.TeamsViewModel
 import com.cgadoury.onthebench.api.model.standing.Standing
 
 /**
@@ -61,7 +61,7 @@ fun TeamsScreen(
 
     LazyColumn {
         items(teams) { team ->
-            TeamsCard(
+            TeamCard(
                 modifier = modifier.padding(5.dp),
                 team = team,
                 navController = navController
@@ -79,7 +79,7 @@ fun TeamsScreen(
  * @return Unit
  */
 @Composable
-fun TeamsCard(
+fun TeamCard(
     modifier: Modifier,
     team: Standing?,
     navController: NavController

@@ -1,4 +1,4 @@
-package com.cgadoury.onthebench.viewmodel
+package com.cgadoury.onthebench.mvvm
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
