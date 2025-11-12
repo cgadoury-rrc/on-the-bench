@@ -29,7 +29,7 @@ data class Player(
     @Json(name = "draftDetails")
     var draftDetails: DraftDetails?=null,
     @Json(name = "featuredStats")
-    var featuredStats: FeaturedStats?=null,
+    var featuredStats: FeaturedStats= FeaturedStats(),
     @Json(name = "firstName")
     var firstName: FirstNameX?=null,
     @Json(name = "fullTeamName")

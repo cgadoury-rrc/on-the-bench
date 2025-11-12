@@ -7,31 +7,31 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class SubSeason(
     @Json(name = "assists")
-    var assists: Int?,
+    var assists: Int=0,
     @Json(name = "gameWinningGoals")
-    var gameWinningGoals: Int?,
+    var gameWinningGoals: Int=0,
     @Json(name = "gamesPlayed")
-    var gamesPlayed: Int?,
+    var gamesPlayed: Int=0,
     @Json(name = "goals")
-    var goals: Int?,
+    var goals: Int=0,
     @Json(name = "otGoals")
-    var otGoals: Int?,
+    var otGoals: Int=0,
     @Json(name = "pim")
-    var pim: Int?,
+    var pim: Int=0,
     @Json(name = "plusMinus")
-    var plusMinus: Int?,
+    var plusMinus: Int=0,
     @Json(name = "points")
-    var points: Int?,
+    var points: Int=0,
     @Json(name = "powerPlayGoals")
-    var powerPlayGoals: Int?,
+    var powerPlayGoals: Int=0,
     @Json(name = "powerPlayPoints")
-    var powerPlayPoints: Int?,
+    var powerPlayPoints: Int=0,
     @Json(name = "shootingPctg")
-    var shootingPctg: Double?,
+    var shootingPctg: Double=0.0,
     @Json(name = "shorthandedGoals")
-    var shorthandedGoals: Int?,
+    var shorthandedGoals: Int=0,
     @Json(name = "shorthandedPoints")
-    var shorthandedPoints: Int?,
+    var shorthandedPoints: Int=0,
     @Json(name = "shots")
-    var shots: Int?
+    var shots: Int=0
 )

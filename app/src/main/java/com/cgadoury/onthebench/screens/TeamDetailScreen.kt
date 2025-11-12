@@ -84,9 +84,9 @@ fun TeamDetailScreen(
             StatItem("Points", team.points, Color.Black)
         }
 
-        OverallStatCard(
+        TeamStatCard(
             modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            teamData = team
+            team = team
         )
     }
 }
@@ -96,9 +96,9 @@ fun TeamDetailScreen(
  *
  */
 @Composable
-fun OverallStatCard(
+fun TeamStatCard(
     modifier: Modifier,
-    teamData: Standing
+    team: Standing
 ) {
     Card(
         modifier = modifier,
@@ -109,10 +109,10 @@ fun OverallStatCard(
             modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            val winPctgAsInt = (teamData.winPctg * 100).toInt()
+            val winPctgAsInt = (team.winPctg * 100).toInt()
             val isWinPctgGood = winPctgAsInt > 50
-            val isGoalDiffGood = teamData.goalDifferential > 0
-            val isStreakGood = teamData.streakCode.startsWith("W")
+            val isGoalDiffGood = team.goalDifferential > 0
+            val isStreakGood = team.streakCode.startsWith("W")
 
             StatusStatCard(
                 modifier = Modifier.weight(1f),
@@ -123,13 +123,13 @@ fun OverallStatCard(
             StatusStatCard(
                 modifier = Modifier.weight(1f),
                 label = "Goal Diff.",
-                value = teamData.goalDifferential.toString(),
+                value = team.goalDifferential.toString(),
                 isGood = isGoalDiffGood
             )
             StatusStatCard(
                 modifier = Modifier.weight(1f),
                 label = "Streak",
-                value = teamData.streakCode + teamData.streakCount,
+                value = team.streakCode + team.streakCount,
                 isGood = isStreakGood
             )
         }

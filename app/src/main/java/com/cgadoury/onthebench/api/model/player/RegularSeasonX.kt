@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class RegularSeasonX(
     @Json(name = "career")
-    var career: Career?,
+    var career: Career=Career(),
     @Json(name = "subSeason")
-    var subSeason: SubSeason?
+    var subSeason: SubSeason=SubSeason()
 )

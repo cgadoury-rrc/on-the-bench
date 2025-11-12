@@ -1,5 +1,6 @@
 package com.cgadoury.onthebench.screens
 
+import android.inputmethodservice.Keyboard
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +13,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +33,11 @@ import coil3.request.ImageRequest
 import coil3.svg.SvgDecoder
 import com.cgadoury.onthebench.api.model.player.Player
 import com.cgadoury.onthebench.ui.components.StatItem
+import com.cgadoury.onthebench.ui.components.StatusStatCard
 
+/**
+ *
+ */
 @Composable
 fun PlayerDetailScreen(
     modifier: Modifier,
@@ -77,6 +85,63 @@ fun PlayerDetailScreen(
             StatItem("A", player.featuredStats?.regularSeason?.subSeason?.assists)
             StatItem("+/-", player.featuredStats?.regularSeason?.subSeason?.plusMinus)
             StatItem("PIM", player.featuredStats?.regularSeason?.subSeason?.pim)
+        }
+
+        PlayerStatCard(
+            modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            player = player
+        )
+    }
+}
+
+@Composable
+fun PlayerStatCard(
+    modifier: Modifier,
+    player: Player
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+    ) {
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            val points = player.featuredStats.regularSeason.subSeason.points
+            val gamesPlayed = player.featuredStats.regularSeason.subSeason.gamesPlayed
+            val shootingPctg = (
+                    player.featuredStats.regularSeason.subSeason.shootingPctg * 100
+                    ).toInt()
+            val pointsPerGame: Double = if (gamesPlayed > 0) {
+                points.toDouble() / gamesPlayed
+            } else {
+                0.0
+            }
+            val shotsPerGame: Double = if (gamesPlayed > 0) {
+                player.featuredStats.regularSeason.subSeason.shots.toDouble() / gamesPlayed
+            } else {
+                0.0
+            }
+
+            StatusStatCard(
+                modifier = Modifier.weight(1f),
+                label = "P/GP",
+                value = String.format("%.2f", pointsPerGame),
+                isGood = pointsPerGame > 0.75
+            )
+            StatusStatCard(
+                modifier = Modifier.weight(1f),
+                label = "S/GP",
+                value = String.format("%.2f", shotsPerGame),
+                isGood = shotsPerGame > 1.5
+            )
+            StatusStatCard(
+                modifier = Modifier.weight(1f),
+                label = "Shooting Pctg.",
+                value = "${shootingPctg}%",
+                isGood = shootingPctg > 15
+            )
         }
     }
 }

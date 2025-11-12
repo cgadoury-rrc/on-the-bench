@@ -42,7 +42,7 @@ fun StatusStatCard(
                 modifier = Modifier
                     .padding(20.dp)
                     .fillMaxWidth(),
-                fontSize = 28.sp,
+                fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
