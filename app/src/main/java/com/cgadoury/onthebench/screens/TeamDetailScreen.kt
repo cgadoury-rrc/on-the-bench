@@ -1,6 +1,5 @@
 package com.cgadoury.onthebench.screens
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,8 +14,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,12 +25,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.svg.SvgDecoder
 import com.cgadoury.onthebench.api.model.standing.Standing
+import com.cgadoury.onthebench.ui.components.StatusStatCard
+import com.cgadoury.onthebench.ui.components.StatItem
 
 /**
  *
@@ -93,25 +91,6 @@ fun TeamDetailScreen(
     }
 }
 
-/**
- *
- */
-@Composable
-fun StatItem(label: String, value: Int?, color: Color) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = value?.toString() ?: "0",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = color
-        )
-        Text(
-            text = label,
-            fontSize = 12.sp,
-            color = Color.Gray
-        )
-    }
-}
 
 /**
  *
@@ -126,127 +105,32 @@ fun OverallStatCard(
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     ) {
-
         Row (
             modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            LargeStatPctgCard(Modifier.weight(1f), "Win Pctg.", teamData.winPctg)
-            LargeStatGoalDiffCard(Modifier.weight(1f), "Goal Diff.", teamData.goalDifferential)
-            LargeStatStreakCard(Modifier.weight(1f), "Streak", teamData.streakCode + teamData.streakCount)
-        }
-    }
-}
+            val winPctgAsInt = (teamData.winPctg * 100).toInt()
+            val isWinPctgGood = winPctgAsInt > 50
+            val isGoalDiffGood = teamData.goalDifferential > 0
+            val isStreakGood = teamData.streakCode.startsWith("W")
 
-/**
- *
- */
-@Composable
-fun LargeStatPctgCard(
-    modifier: Modifier,
-    label: String,
-    value: Double,
-) {
-    val pctgAsInt = (value * 100).toInt()
-    Log.i("Pctg", pctgAsInt.toString())
-    Column(modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = label,
-            fontSize = 12.sp,
-            color = Color.Gray
-        )
-        Card(
-            modifier = Modifier
-                .padding(horizontal = 10.dp)
-                .fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = if (pctgAsInt > 50) Color(0xFF4C70AF) else Color(0xFFF44336)
+            StatusStatCard(
+                modifier = Modifier.weight(1f),
+                label ="Win Pctg.",
+                value = "${winPctgAsInt}%",
+                isGood = isWinPctgGood
             )
-        ) {
-            Text(
-                text = "${pctgAsInt}%",
-                modifier = Modifier
-                    .padding(20.dp)
-                    .fillMaxWidth(),
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+            StatusStatCard(
+                modifier = Modifier.weight(1f),
+                label = "Goal Diff.",
+                value = teamData.goalDifferential.toString(),
+                isGood = isGoalDiffGood
             )
-        }
-    }
-}
-
-/**
- *
- */
-@Composable
-fun LargeStatStreakCard(
-    modifier: Modifier,
-    label: String,
-    value: String
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = label,
-            fontSize = 12.sp,
-            color = Color.Gray
-        )
-        Card(
-            modifier = Modifier
-                .padding(horizontal = 10.dp)
-                .fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = if (value.startsWith("W")) Color(0xFF4C70AF) else Color(0xFFF44336)
-            )
-        ) {
-            Text(
-                text = value,
-                modifier = Modifier
-                    .padding(20.dp)
-                    .fillMaxWidth(),
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
-
-@Composable
-fun LargeStatGoalDiffCard(
-    modifier: Modifier,
-    label: String,
-    value: Int
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = label,
-            fontSize = 12.sp,
-            color = Color.Gray
-        )
-        Card(
-            modifier = Modifier
-                .padding(horizontal = 10.dp)
-                .fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = if (value > 0) Color(0xFF4C70AF) else Color(0xFFF44336)
-            )
-        ) {
-            Text(
-                text = if (value > 0) "+${value}" else value.toString(),
-                modifier = Modifier
-                    .padding(20.dp)
-                    .fillMaxWidth(),
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+            StatusStatCard(
+                modifier = Modifier.weight(1f),
+                label = "Streak",
+                value = teamData.streakCode + teamData.streakCount,
+                isGood = isStreakGood
             )
         }
     }

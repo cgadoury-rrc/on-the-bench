@@ -1,9 +1,13 @@
 package com.cgadoury.onthebench.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,6 +28,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.svg.SvgDecoder
 import com.cgadoury.onthebench.api.model.player.Player
+import com.cgadoury.onthebench.ui.components.StatItem
 
 @Composable
 fun PlayerDetailScreen(
@@ -60,5 +65,18 @@ fun PlayerDetailScreen(
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            StatItem("GP", player.featuredStats?.regularSeason?.subSeason?.gamesPlayed)
+            StatItem("G", player.featuredStats?.regularSeason?.subSeason?.goals)
+            StatItem("A", player.featuredStats?.regularSeason?.subSeason?.assists)
+            StatItem("+/-", player.featuredStats?.regularSeason?.subSeason?.plusMinus)
+            StatItem("PIM", player.featuredStats?.regularSeason?.subSeason?.pim)
+        }
     }
 }
