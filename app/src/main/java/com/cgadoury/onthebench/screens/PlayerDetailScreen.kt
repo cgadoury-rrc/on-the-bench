@@ -41,7 +41,9 @@ import com.cgadoury.onthebench.ui.components.StatusStatCard
 import com.cgadoury.onthebench.ui.theme.TeamColors
 
 /**
- *
+ * Purpose - player detail screen - show details for a specific player
+ * @param modifier: The modifier to use
+ * @param player: The player to handle
  */
 @Composable
 fun PlayerDetailScreen(
@@ -157,6 +159,12 @@ fun PlayerDetailScreen(
     }
 }
 
+/**
+ * Purpose - player info card - displays a players personal information
+ * @param modifier: The modifier to use
+ * @param player: The player to handle
+ * @return Unit
+ */
 @Composable
 fun PlayerInfoCard(
     modifier: Modifier,
@@ -185,6 +193,12 @@ fun PlayerInfoCard(
     }
 }
 
+/**
+ * Purpose - player info item - an item to display player information
+ * @param label: The type of information
+ * @param value: The value to display
+ * @param color: The color of the value to display
+ */
 @Composable
 fun PlayerInfoItem(
     label: String,
@@ -209,6 +223,12 @@ fun PlayerInfoItem(
     }
 }
 
+/**
+ * Purpose - player stat card - displays player statistics
+ * @param modifier: The modifier to use
+ * @param player: The player to handle
+ * @return Unit
+ */
 @Composable
 fun PlayerStatCard(
     modifier: Modifier,
