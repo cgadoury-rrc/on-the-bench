@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.cgadoury.onthebench.api.GameManager
 import com.cgadoury.onthebench.api.NhlApi
 import com.cgadoury.onthebench.mvvm.TeamsViewModel
 import com.cgadoury.onthebench.db.AppDatabase
@@ -50,7 +49,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             OnTheBenchTheme {
                 val navController = rememberNavController()
-                val gameManager = GameManager()
                 val db = AppDatabase.getInstance(applicationContext)
                 val api = NhlApi.retrofitService
                 val teamRepository: TeamRepository = TeamRepositoryImpl(api, db.teamDao())
@@ -105,7 +103,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(Destination.Games.route) {
-                            GamesScreen(gameManager = gameManager)
+                            GamesScreen()
                         }
 
                         composable(Destination.TeamDetail.route) { navBackStackEntry ->
