@@ -7,17 +7,17 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class TeamCommonName(
     @Json(name = "cs")
-    var cs: String?,
+    var cs: String="",
     @Json(name = "de")
-    var de: String?,
+    var de: String="",
     @Json(name = "default")
-    var default: String?,
+    var default: String="",
     @Json(name = "es")
-    var es: String?,
+    var es: String="",
     @Json(name = "fi")
-    var fi: String?,
+    var fi: String="",
     @Json(name = "sk")
-    var sk: String?,
+    var sk: String="",
     @Json(name = "sv")
-    var sv: String?
+    var sv: String=""
 )

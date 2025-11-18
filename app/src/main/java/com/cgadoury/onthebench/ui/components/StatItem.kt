@@ -12,18 +12,18 @@ import androidx.compose.ui.unit.sp
  *
  */
 @Composable
-fun StatItem(label: String, value: Int?, color: Color = Color.Black) {
+fun StatItem(label: String, value: Int?, color: Color=Color.Black) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = value?.toString() ?: "0",
-            fontSize = 24.sp,
+            fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             color = color
         )
         Text(
             text = label,
-            fontSize = 12.sp,
-            color = Color.Gray
+            fontSize = 14.sp,
+            color = color
         )
     }
 }

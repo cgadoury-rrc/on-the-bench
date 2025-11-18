@@ -102,7 +102,6 @@ fun PlayerCard(
                 }
                     .build()
             )
-
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center

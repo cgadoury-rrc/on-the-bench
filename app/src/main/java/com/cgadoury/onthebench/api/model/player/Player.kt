@@ -27,7 +27,7 @@ data class Player(
     @Json(name = "currentTeamRoster")
     var currentTeamRoster: List<CurrentTeamRoster> = emptyList(),
     @Json(name = "draftDetails")
-    var draftDetails: DraftDetails?=null,
+    var draftDetails: DraftDetails = DraftDetails(),
     @Json(name = "featuredStats")
     var featuredStats: FeaturedStats= FeaturedStats(),
     @Json(name = "firstName")

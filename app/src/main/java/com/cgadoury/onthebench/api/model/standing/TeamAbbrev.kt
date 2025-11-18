@@ -7,5 +7,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class TeamAbbrev(
     @Json(name = "default")
-    var default: String?
+    var default: String=""
 )

@@ -7,13 +7,13 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class DraftDetails(
     @Json(name = "overallPick")
-    var overallPick: Int?,
+    var overallPick: Int=0,
     @Json(name = "pickInRound")
-    var pickInRound: Int?,
+    var pickInRound: Int=0,
     @Json(name = "round")
-    var round: Int?,
+    var round: Int=0,
     @Json(name = "teamAbbrev")
-    var teamAbbrev: String?,
+    var teamAbbrev: String="",
     @Json(name = "year")
-    var year: Int?
+    var year: Int=0
 )
