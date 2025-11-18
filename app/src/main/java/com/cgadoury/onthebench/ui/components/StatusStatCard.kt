@@ -1,6 +1,5 @@
 package com.cgadoury.onthebench.ui.components
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,12 +12,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * Purpose - status stat card - display a statistic with a colored card
+ * @param modifier: The modifier to use
+ * @param label: A label describing the statistic
+ * @param value: The value of the statistic
+ * @param isGood: Determines if the statistic is good (blue) or bad (red)
+ * @return Unit
+ */
 @Composable
 fun StatusStatCard(
     modifier: Modifier,

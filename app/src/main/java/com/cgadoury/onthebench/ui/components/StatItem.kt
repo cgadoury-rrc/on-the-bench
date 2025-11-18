@@ -9,10 +9,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 /**
- *
+ * Purpose - stat item - display a statistic and corresponding label
+ * @param label: A label describing the statistic
+ * @param value: The value of the statistic
+ * @param color: The text color of the value
+ * @return
  */
 @Composable
-fun StatItem(label: String, value: Int?, color: Color=Color.Black) {
+fun StatItem(
+    label: String,
+    value: Int?,
+    color: Color=Color.Black
+) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = value?.toString() ?: "0",

@@ -44,6 +44,7 @@ import com.cgadoury.onthebench.ui.theme.TeamColors
  * Purpose - player detail screen - show details for a specific player
  * @param modifier: The modifier to use
  * @param player: The player to handle
+ * @return Unit
  */
 @Composable
 fun PlayerDetailScreen(
@@ -198,6 +199,7 @@ fun PlayerInfoCard(
  * @param label: The type of information
  * @param value: The value to display
  * @param color: The color of the value to display
+ * @return Unit
  */
 @Composable
 fun PlayerInfoItem(

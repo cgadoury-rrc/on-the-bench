@@ -39,6 +39,13 @@ import coil3.svg.SvgDecoder
 import com.cgadoury.onthebench.api.model.point.Point
 import com.cgadoury.onthebench.mvvm.PlayersViewModel
 
+/**
+ * Purpose - players screen - displays top 50 nhl players
+ * @param modifier: The modifier to use
+ * @param playersViewModel: The players view model
+ * @param navController: The navigation controller
+ * @return Unit
+ */
 @Composable
 fun PlayersScreen(
     modifier: Modifier,
@@ -48,7 +55,6 @@ fun PlayersScreen(
     Box(
         modifier = modifier.fillMaxSize()
     )
-
     val topPlayers by playersViewModel.topPlayersResponse
 
     LazyColumn {
@@ -62,6 +68,12 @@ fun PlayersScreen(
     }
 }
 
+/**
+ * Purpose - player card - a player item in the players screen
+ * @param modifier: The modifier to use
+ * @param player: The player to handle
+ * @param navController: The navigation controller
+ */
 @Composable
 fun PlayerCard(
     modifier: Modifier,
