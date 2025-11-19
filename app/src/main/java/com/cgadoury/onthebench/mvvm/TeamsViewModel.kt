@@ -10,7 +10,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 
 /**
- * Purpose - Standing Manager - manages NHL standings data
+ * Purpose - teams view model - handle team data between ui and data layers
  */
 @OptIn(DelicateCoroutinesApi::class)
 class TeamsViewModel(
@@ -32,6 +32,7 @@ class TeamsViewModel(
 
     /**
      * Purpose - load teams - load teams using the teams repository
+     * @return Unit
      */
     private fun loadTeams() {
         viewModelScope.launch {
@@ -39,6 +40,10 @@ class TeamsViewModel(
         }
     }
 
+    /**
+     * Purpose - get team by abbreviation - get a team by its abbreviation
+     * @return Unit
+     */
     fun getTeamByAbbreviation(teamAbbrev: String) {
         viewModelScope.launch {
             _team.value = teamRepository.getTeamByAbbreviation(teamAbbrev = teamAbbrev)

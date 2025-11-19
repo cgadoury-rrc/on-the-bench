@@ -19,13 +19,13 @@ interface NhlApiService {
     suspend fun getCurrentStandings(): Response<StandingData>
 
     @GET("v1/score/now")
-    fun getGamesToday(): Call<GameData>
+    suspend fun getGamesToday(): Response<GameData>
 
     @GET("v1/score/{date}")
-    fun getGamesByDate(@Path("date") date: String): Call<GameData>
+    suspend fun getGamesByDate(@Path("date") date: String): Response<GameData>
 
     @GET("v1/roster/{team}/current")
-    fun getCurrentRoster(@Path("team") team: String): Call<RosterData>
+    suspend fun getCurrentRoster(@Path("team") team: String): Call<RosterData>
 
     @GET("v1/skater-stats-leaders/current?categories=points&limit=50")
     suspend fun getTop50SkaterPoints(): Response<PointsData>

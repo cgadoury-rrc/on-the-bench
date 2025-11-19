@@ -1,5 +1,6 @@
 package com.cgadoury.onthebench.screens
 
+import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +42,7 @@ import coil3.request.ImageRequest
 import coil3.svg.SvgDecoder
 import com.cgadoury.onthebench.api.model.point.Point
 import com.cgadoury.onthebench.mvvm.PlayersViewModel
+import com.cgadoury.onthebench.utility.SvgDecoderUtil
 
 /**
  * Purpose - players screen - displays top 50 nhl players
@@ -55,10 +60,10 @@ fun PlayersScreen(
     Box(
         modifier = modifier.fillMaxSize()
     )
-    val topPlayers by playersViewModel.topPlayersResponse
+    val pointsLeaders by playersViewModel.topPlayersResponse
 
     LazyColumn {
-        items(topPlayers) { player ->
+        items(pointsLeaders) { player ->
             PlayerCard(
                 modifier = modifier.padding(5.dp),
                 player = player,
@@ -100,19 +105,16 @@ fun PlayerCard(
                     .size(65.dp)
                     .clip(CircleShape)
                     .background(Color.Gray.copy(alpha = 0.1f))
-                    .padding(4.dp)
                     .align(Alignment.CenterVertically),
                 model = ImageRequest.Builder(
                     LocalContext.current
                 ).data(player?.headshot)
                     .build(),
                 contentDescription = null,
-                imageLoader = ImageLoader.Builder(
-                    LocalContext.current
-                ).components {
-                    add(SvgDecoder.Factory())
-                }
-                    .build()
+                imageLoader = SvgDecoderUtil()
+                    .decodeSvgImage(
+                        context = LocalContext.current
+                    )
             )
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -137,4 +139,13 @@ fun PlayerCard(
             }
         }
     }
+}
+
+fun test(context: Context): ImageLoader {
+    return ImageLoader.Builder(
+        context
+    ).components {
+        add(SvgDecoder.Factory())
+    }
+        .build()
 }

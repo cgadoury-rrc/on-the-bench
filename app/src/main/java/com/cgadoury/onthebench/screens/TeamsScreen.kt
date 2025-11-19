@@ -38,6 +38,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.cgadoury.onthebench.mvvm.TeamsViewModel
 import com.cgadoury.onthebench.api.model.standing.Standing
+import com.cgadoury.onthebench.utility.SvgDecoderUtil
 
 /**
  * Purpose - Teams Screen - display NHL teams for the current season
@@ -111,14 +112,11 @@ fun TeamCard(
                 ).data(team?.teamLogo)
                     .build(),
                 contentDescription = null,
-                imageLoader = ImageLoader.Builder(
-                    LocalContext.current
-                ).components {
-                        add(SvgDecoder.Factory())
-                    }
-                    .build()
+                imageLoader = SvgDecoderUtil()
+                    .decodeSvgImage(
+                        context = LocalContext.current
+                    )
             )
-
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center

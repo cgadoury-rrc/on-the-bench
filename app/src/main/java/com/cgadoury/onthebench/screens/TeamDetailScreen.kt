@@ -37,6 +37,7 @@ import com.cgadoury.onthebench.api.model.standing.Standing
 import com.cgadoury.onthebench.ui.components.StatusStatCard
 import com.cgadoury.onthebench.ui.components.StatItem
 import com.cgadoury.onthebench.ui.theme.TeamColors
+import com.cgadoury.onthebench.utility.SvgDecoderUtil
 
 /**
  *
@@ -90,11 +91,10 @@ fun TeamDetailScreen(
                     ).data(team.teamLogo)
                         .build(),
                     contentDescription = null,
-                    imageLoader = ImageLoader.Builder(
-                        LocalContext.current
-                    ).components {
-                        add(SvgDecoder.Factory())
-                    }.build()
+                    imageLoader = SvgDecoderUtil()
+                        .decodeSvgImage(
+                            context = LocalContext.current
+                        )
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(

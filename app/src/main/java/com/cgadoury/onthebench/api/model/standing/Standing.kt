@@ -107,7 +107,7 @@ data class Standing(
     @Json(name = "otLosses")
     var otLosses: Int=0,
     @Json(name = "placeName")
-    var placeName: PlaceName = PlaceName("", ""),
+    var placeName: PlaceName = PlaceName(),
     @Json(name = "pointPctg")
     var pointPctg: Double=0.0,
     @Json(name = "points")

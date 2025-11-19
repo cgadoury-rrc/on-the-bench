@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -26,6 +25,7 @@ import com.cgadoury.onthebench.api.NhlApi
 import com.cgadoury.onthebench.mvvm.TeamsViewModel
 import com.cgadoury.onthebench.db.AppDatabase
 import com.cgadoury.onthebench.destinations.Destination
+import com.cgadoury.onthebench.mvvm.GamesViewModel
 import com.cgadoury.onthebench.navigation.BottomNavBar
 import com.cgadoury.onthebench.repository.PlayerRepository
 import com.cgadoury.onthebench.repository.PlayerRepositoryImpl
@@ -37,9 +37,14 @@ import com.cgadoury.onthebench.screens.TeamDetailScreen
 import com.cgadoury.onthebench.screens.TeamsScreen
 import com.cgadoury.onthebench.ui.theme.OnTheBenchTheme
 import com.cgadoury.onthebench.mvvm.PlayersViewModel
+import com.cgadoury.onthebench.repository.GameRepository
+import com.cgadoury.onthebench.repository.GameRepositoryImpl
 import com.cgadoury.onthebench.screens.PlayerDetailScreen
 import kotlinx.coroutines.DelicateCoroutinesApi
 
+/**
+ * Purpose - main activity - the apps main activity
+ */
 class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
@@ -53,12 +58,15 @@ class MainActivity : ComponentActivity() {
                 val api = NhlApi.retrofitService
                 val teamRepository: TeamRepository = TeamRepositoryImpl(api, db.teamDao())
                 val playerRepository: PlayerRepository = PlayerRepositoryImpl(api)
-
+                val gameRepository: GameRepository = GameRepositoryImpl(api)
                 val teamsViewModel by lazy {
                     TeamsViewModel(teamRepository = teamRepository)
                 }
                 val playersViewModel by lazy {
                     PlayersViewModel(playerRepository = playerRepository)
+                }
+                val gamesViewModel by lazy {
+                    GamesViewModel(gameRepository = gameRepository)
                 }
 
                 Scaffold(
@@ -103,7 +111,11 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(Destination.Games.route) {
-                            GamesScreen()
+                            GamesScreen(
+                                modifier = Modifier,
+                                gamesViewModel = gamesViewModel,
+                                navController = navController
+                                )
                         }
 
                         composable(Destination.TeamDetail.route) { navBackStackEntry ->
@@ -129,7 +141,7 @@ class MainActivity : ComponentActivity() {
                             Log.i("Player Id", playerId.toString())
 
                             LaunchedEffect(playerId) {
-                                playersViewModel.getPlayer(playerId = playerId?.toInt()!!)
+                                playersViewModel.getPlayerById(playerId = playerId?.toInt()!!)
                             }
 
                             player?.let {

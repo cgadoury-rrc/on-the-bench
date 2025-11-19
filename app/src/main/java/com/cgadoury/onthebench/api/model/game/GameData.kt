@@ -7,15 +7,15 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GameData(
     @Json(name = "currentDate")
-    var currentDate: String?,
+    var currentDate: String="",
     @Json(name = "gameWeek")
-    var gameWeek: List<GameWeek>?,
+    var gameWeek: List<GameWeek> = emptyList(),
     @Json(name = "games")
-    var games: List<Game>?,
+    var games: List<Game> = emptyList(),
     @Json(name = "nextDate")
-    var nextDate: String?,
+    var nextDate: String="",
     @Json(name = "oddsPartners")
-    var oddsPartners: List<OddsPartner>?,
+    var oddsPartners: List<OddsPartner> = emptyList(),
     @Json(name = "prevDate")
-    var prevDate: String?
+    var prevDate: String=""
 )

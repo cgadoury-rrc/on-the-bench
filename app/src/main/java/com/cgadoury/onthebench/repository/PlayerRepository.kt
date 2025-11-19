@@ -13,7 +13,7 @@ interface PlayerRepository {
     suspend fun getTopPlayers(): List<Point>
 
     /**
-     * Purpose - get player by id - get a player by id
+     * Purpose - get player by id - get a player by player id
      * @param playerId: The player id to search
      * @return Player?
      */
