@@ -13,7 +13,6 @@ class PlayerRepositoryImpl(
     private val nhlApiService: NhlApiService
 ): PlayerRepository {
     private var topPlayers: List<Point> = emptyList()
-    private var player: Player? = null
 
     /**
      * Purpose - get top players - get top nhl player in terms of points
@@ -31,8 +30,6 @@ class PlayerRepositoryImpl(
      * @return Player?
      */
     override suspend fun getPlayerById(playerId: Int): Player? {
-        player = nhlApiService.getPlayerById(playerId).body()
-
-        return player
+        return nhlApiService.getPlayerById(playerId).body()
     }
 }
