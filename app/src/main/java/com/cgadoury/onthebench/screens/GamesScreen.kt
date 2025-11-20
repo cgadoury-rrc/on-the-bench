@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -30,13 +27,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.cgadoury.onthebench.api.model.game.Game
 import com.cgadoury.onthebench.mvvm.GamesViewModel
 import com.cgadoury.onthebench.utility.SvgDecoderUtil
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 /**
  * Purpose - games screen - display nhl games
@@ -98,12 +100,19 @@ fun GamesScreen(
     }
 }
 
+/**
+ * Purpose - game day tab - displays game day data for a given day
+ * @param modifier: The application modifier
+ * @param gameDayData: Game day data to process (yesterday, today, tomorrow)
+ * @param navController: The application navigation controller
+ * @return Unit
+ */
 @Composable
 fun GameDayTab(
     modifier: Modifier,
     gameDayData: List<Game>,
     navController: NavController
-) {
+): Unit {
     LazyColumn {
         items(gameDayData) { game ->
             GameCard(
@@ -127,7 +136,7 @@ fun GameCard(
     modifier: Modifier,
     game: Game,
     navController: NavController
-) {
+): Unit {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(10.dp),
@@ -135,6 +144,20 @@ fun GameCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
+        val utcString = game.startTimeUTC.toString()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            val isLive: Boolean = game.gameOutcome == null
+            Text(text = getFormattedStartDateTimeString(utcString = utcString))
+            Text(
+                text = if (isLive) "LIVE •" else "FINAL",
+                color = if (isLive) Color.Red else Color.DarkGray
+                )
+        }
         Row(
            modifier = Modifier
                .fillMaxWidth()
@@ -142,10 +165,56 @@ fun GameCard(
             horizontalArrangement = Arrangement.Absolute.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                game.awayTeam?.abbrev?.let { Text(text = it, fontWeight = FontWeight.Bold) }
                 AsyncImage(
                     modifier = Modifier
-                        .size(65.dp),
+                        .size(75.dp),
+                    model = ImageRequest.Builder(
+                        LocalContext.current
+                    ).data(game.awayTeam?.logo)
+                        .build(),
+                    contentDescription = "Away Team Logo",
+                    imageLoader = SvgDecoderUtil()
+                        .decodeSvgImage(
+                            context = LocalContext.current
+                        )
+                )
+            }
+            val awayTeamScore =
+                if (game.awayTeam?.score.toString() == "null") "0"
+                else game.awayTeam?.score.toString()
+            Text(
+                text = awayTeamScore,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "P${game.period.toString()} ")
+                Text(text = game.clock?.timeRemaining.toString())
+                Text(text="VS")
+            }
+
+            val homeTeamScore =
+                if (game.homeTeam?.score.toString() == "null") "0"
+                else game.homeTeam?.score.toString()
+            Text(
+                text = homeTeamScore,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                game.homeTeam?.abbrev?.let { Text(text = it, fontWeight = FontWeight.Bold) }
+                AsyncImage(
+                    modifier = Modifier
+                        .size(75.dp),
                     model = ImageRequest.Builder(
                         LocalContext.current
                     ).data(game.homeTeam?.logo)
@@ -157,22 +226,17 @@ fun GameCard(
                         )
                 )
             }
-            Text(text="VS")
-            Column {
-                AsyncImage(
-                    modifier = Modifier
-                        .size(65.dp),
-                    model = ImageRequest.Builder(
-                        LocalContext.current
-                    ).data(game.awayTeam?.logo)
-                        .build(),
-                    contentDescription = "Home Team Logo",
-                    imageLoader = SvgDecoderUtil()
-                        .decodeSvgImage(
-                            context = LocalContext.current
-                        )
-                )
-            }
         }
     }
+}
+
+/**
+ * Purpose - get formatted start date time string - formats game start time from utc to local time
+ * @param utcString: The game start time in utc as a string
+ * @return String: The formatted game start time
+ */
+private fun getFormattedStartDateTimeString(utcString: String): String {
+    val instant = Instant.parse(utcString)
+    val localDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime()
+    return localDateTime.format(DateTimeFormatter.ofPattern("MMM dd - h:mm a"))
 }

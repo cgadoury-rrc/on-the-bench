@@ -130,9 +130,12 @@ fun TeamCard(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
+                    Text(text = "L10 ")
                     Text(text = "W: ${team?.l10Wins} ")
                     Text(text = "L: ${team?.l10Losses} ")
                     Text(text = "OTL: ${team?.l10OtLosses}")
