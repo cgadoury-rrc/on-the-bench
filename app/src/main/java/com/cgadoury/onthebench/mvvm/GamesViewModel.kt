@@ -31,7 +31,6 @@ class GamesViewModel (
     val gamesYesterdayResponse: State<List<Game>> = _gamesYesterdayResponse
     private var _gamesTomorrowResponse = mutableStateOf<List<Game>>(emptyList())
     val gamesTomorrowResponse: State<List<Game>> = _gamesTomorrowResponse
-
     val wildcard = Random().nextInt(1, 100)
 
     init {
