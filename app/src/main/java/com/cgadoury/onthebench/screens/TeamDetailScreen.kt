@@ -1,7 +1,7 @@
 package com.cgadoury.onthebench.screens
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -33,10 +34,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
-import com.cgadoury.onthebench.api.model.roster.RosterData
 import com.cgadoury.onthebench.api.model.roster.RosterPlayerData
 import com.cgadoury.onthebench.api.model.standing.Standing
 import com.cgadoury.onthebench.mvvm.TeamsViewModel
@@ -46,7 +47,11 @@ import com.cgadoury.onthebench.ui.theme.TeamColors
 import com.cgadoury.onthebench.utility.SvgDecoderUtil
 
 /**
- * Purpose - team detail screen -
+ * Purpose - team detail screen - display team details including stats and rosters
+ * @param modifier: The application modifier
+ * @param team: The team to display details from
+ * @param teamsViewModel: The teams view model to retrieve team information
+ * @param navController: The application navigation controller
  */
 @Composable
 fun TeamDetailScreen(
@@ -55,97 +60,171 @@ fun TeamDetailScreen(
     teamsViewModel: TeamsViewModel,
     navController: NavController
 ) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+    val teamAbbrev = team.teamAbbrev.default
+    LaunchedEffect(teamAbbrev) {
+        teamsViewModel.getCurrentTeamRoster(teamAbbrev = teamAbbrev)
+    }
+    val teamRoster = teamsViewModel.teamRoster.value
+    val teamColor = TeamColors.colors[teamAbbrev] ?: Color.White
+    val backgroundColors = listOf(
+        teamColor,
+        teamColor.copy(alpha = 0.8f),
+        teamColor.copy(alpha = 0.5f),
+        teamColor.copy(alpha = 0.2f),
+        MaterialTheme.colorScheme.surface
+    )
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize(),
     ) {
-        val teamAbbrev = team.teamAbbrev.default
-        LaunchedEffect(teamAbbrev) {
-            teamsViewModel.getCurrentTeamRoster(teamAbbrev = teamAbbrev)
-        }
-        val teamRoster = teamsViewModel.teamRoster.value
-        val teamColor = TeamColors.colors[teamAbbrev] ?: Color.White
-        val backgroundColors = listOf(
-            teamColor,
-            teamColor.copy(alpha = 0.8f),
-            teamColor.copy(alpha = 0.5f),
-            teamColor.copy(alpha = 0.2f),
-            MaterialTheme.colorScheme.surface
-        )
-        Box(
-            modifier = modifier
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = backgroundColors
-                    )
-                )
-        ) {
-            Column(
-                modifier = modifier
-                    .padding(
-                        vertical = 26.dp,
-                        horizontal = 16.dp
-                    ),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                AsyncImage(
-                    modifier = Modifier
-                        .size(110.dp)
-                        .shadow(
-                            elevation = 16.dp,
-                            shape = CircleShape,
-                            clip = true
-                        )
-                        .clip(CircleShape)
-                        .background(teamColor),
-                    model = ImageRequest.Builder(
-                        LocalContext.current
-                    ).data(team.teamLogo)
-                        .build(),
-                    contentDescription = null,
-                    imageLoader = SvgDecoderUtil()
-                        .decodeSvgImage(
-                            context = LocalContext.current
-                        )
-                )
-                Spacer(modifier = Modifier.height(14.dp))
-                Text(
-                    text = team.teamName.default.orEmpty(),
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(vertical=8.dp, horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    StatItem("GP", team.gamesPlayed)
-                    StatItem("W", team.wins)
-                    StatItem("L", team.losses)
-                    StatItem("OTL", team.otLosses)
-                    StatItem("Points", team.points)
-                }
-            }
-        }
-        HorizontalDivider(modifier = modifier.padding(16.dp, 8.dp))
-        TeamStatCard(
-            modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            team = team
-        )
-        HorizontalDivider(modifier = modifier.padding(horizontal = 16.dp))
-        if (teamRoster != null) {
-            TeamRosterCard(
-                modifier = modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                teamRoster = teamRoster,
-                navController = navController
+        item {
+            TeamHeader(
+                modifier = modifier,
+                backgroundColors = backgroundColors,
+                teamColor = teamColor,
+                team = team
             )
+        }
+        item {
+            HorizontalDivider(modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+        }
+        item {
+            TeamStatCard(
+                modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                team = team
+            )
+        }
+        if (teamRoster != null) {
+            item {
+                Text(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    text = "Roster",
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.headlineMedium
+                )
+            }
+            item {
+                Text(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    text = "Forwards",
+                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            }
+            items(teamRoster.forwards) { forward ->
+                RosterPlayerRow(
+                    modifier = modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    rosterPlayer = forward,
+                    navController = navController
+                )
+            }
+            item {
+                Text(
+                    modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    text = "Defenseman",
+                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            }
+            items(teamRoster.defensemen) {defenseman ->
+                RosterPlayerRow(
+                    modifier = modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    rosterPlayer = defenseman,
+                    navController = navController
+                )
+            }
+            item {
+                Text(
+                    modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    text = "Goalies",
+                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            }
+            items(teamRoster.goalies) {goalie ->
+                RosterPlayerRow(
+                    modifier = modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    rosterPlayer = goalie,
+                    navController = navController
+                )
+            }
         }
     }
 }
 
+/**
+ * Purpose - team header - display current team information
+ * @param modifier: The application modifier
+ * @param backgroundColors: Background colour to apply as a vertical gradient
+ * @param teamColor: The designated team color
+ * @param team: The team to display
+ */
+@Composable
+fun TeamHeader(
+    modifier: Modifier,
+    backgroundColors: List<Color>,
+    teamColor: Color,
+    team: Standing
+) {
+    Box(
+        modifier = modifier
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = backgroundColors
+                )
+            )
+    ) {
+        Column(
+            modifier = modifier
+                .padding(
+                    vertical = 26.dp,
+                    horizontal = 16.dp
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            AsyncImage(
+                modifier = Modifier
+                    .size(110.dp)
+                    .shadow(
+                        elevation = 16.dp,
+                        shape = CircleShape,
+                        clip = true
+                    )
+                    .clip(CircleShape)
+                    .background(teamColor),
+                model = ImageRequest.Builder(
+                    LocalContext.current
+                ).data(team.teamLogo)
+                    .build(),
+                contentDescription = null,
+                imageLoader = SvgDecoderUtil()
+                    .decodeSvgImage(
+                        context = LocalContext.current
+                    )
+            )
+            Spacer(modifier = Modifier.height(14.dp))
+            Text(
+                text = team.teamName.default.orEmpty(),
+                style = MaterialTheme.typography.headlineLarge,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(vertical=8.dp, horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                StatItem("GP", team.gamesPlayed)
+                StatItem("W", team.wins)
+                StatItem("L", team.losses)
+                StatItem("OTL", team.otLosses)
+                StatItem("Points", team.points)
+            }
+        }
+    }
+}
 
 /**
  * Purpose - team stat card - display team statistics
@@ -203,95 +282,57 @@ fun TeamStatCard(
 }
 
 /**
- * Purpose team roster - display the team roster
+ * Purpose - roster player row - display a roster player row
+ * @param modifier: The application modifier
+ * @param rosterPlayer: Roster player information
+ * @param navController: The application navigation controller
+ * @return Unit
  */
 @Composable
-fun TeamRosterCard(
-    modifier: Modifier,
-    teamRoster: RosterData,
-    navController: NavController
-) {
-
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-    ) {
-        Text(
-            modifier = Modifier.padding(vertical = 18.dp),
-            text = "Roster",
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineMedium
-        )
-        LazyColumn {
-            items(teamRoster.forwards) { forward ->
-                RosterPlayerCard(
-                    modifier = modifier,
-                    rosterPlayer = forward,
-                    navController = navController
-                )
-            }
-            items(teamRoster.defensemen) {defenseman ->
-                RosterPlayerCard(
-                    modifier = modifier,
-                    rosterPlayer = defenseman,
-                    navController = navController
-                )
-            }
-        }
-    }
-
-}
-
-@Composable
-fun RosterPlayerCard(
+fun RosterPlayerRow(
     modifier: Modifier,
     rosterPlayer: RosterPlayerData,
     navController: NavController
-) {
-    Card(
-        modifier = Modifier
+): Unit {
+    Row(
+        modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        shape = RoundedCornerShape(10.dp),
-        border = BorderStroke(1.dp, Color.Gray),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        onClick = {
-            navController.navigate("playerDetail/${rosterPlayer.id}")
-        }
+            .clickable { navController.navigate("playerDetail/${rosterPlayer.id}") },
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
+        AsyncImage(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AsyncImage(
-                modifier = Modifier
-                    .size(30.dp)
-                    .clip(CircleShape)
-                    .background(Color.Gray.copy(alpha = 0.1f))
-                    .align(Alignment.CenterVertically),
-                model = ImageRequest.Builder(
-                    LocalContext.current
-                ).data(rosterPlayer.headshot)
-                    .build(),
-                contentDescription = null,
-                imageLoader = SvgDecoderUtil()
-                    .decodeSvgImage(
-                        context = LocalContext.current
-                    )
+                .size(44.dp)
+                .clip(CircleShape)
+                .background(Color.Gray.copy(alpha = 0.1f))
+                .align(Alignment.CenterVertically),
+            model = ImageRequest.Builder(
+                LocalContext.current
+            ).data(rosterPlayer.headshot)
+                .build(),
+            contentDescription = null,
+            imageLoader = SvgDecoderUtil()
+                .decodeSvgImage(
+                    context = LocalContext.current
+                )
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            val fullName = rosterPlayer.firstName?.default.toString() +
+                    " ${rosterPlayer.lastName?.default.toString()}"
+            Text(
+                text = fullName,
+                fontWeight = FontWeight.SemiBold
             )
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 26.dp),
-                text = rosterPlayer.firstName?.default.toString() +
-                    " ${rosterPlayer.lastName?.default.toString()}",
-                textAlign = TextAlign.Left,
-                fontWeight = FontWeight.SemiBold
+                text = "#${rosterPlayer.sweaterNumber} - ${rosterPlayer.positionCode}",
+                fontSize = 12.sp,
+                color = Color.Gray
             )
         }
     }
+    HorizontalDivider(
+        modifier = Modifier.padding(horizontal = 12.dp),
+        color = Color.Gray.copy(alpha = 0.3f)
+    )
 }
