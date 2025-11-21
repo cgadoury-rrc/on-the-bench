@@ -21,9 +21,6 @@ class TeamsViewModel(
     private var _standingsResponse = mutableStateOf<List<Standing>>(emptyList())
     val standingsResponse: State<List<Standing>> = _standingsResponse
 
-    private var _team = mutableStateOf<Standing?>(Standing())
-    val team: State<Standing?> = _team
-
     private var _teamRoster = mutableStateOf<RosterData?>(RosterData())
     val teamRoster: State<RosterData?> = _teamRoster
 
@@ -45,16 +42,6 @@ class TeamsViewModel(
     }
 
     /**
-     * Purpose - get team by abbreviation - get a team by its abbreviation
-     * @return Unit
-     */
-    fun getTeamByAbbreviation(teamAbbrev: String): Unit {
-        viewModelScope.launch {
-            _team.value = teamRepository.getTeamByAbbreviation(teamAbbrev = teamAbbrev)
-        }
-    }
-
-    /**
      * Purpose - get current team roster - gets a teams current roster
      * @param teamAbbrev: The team abbreviation
      * @return Unit
@@ -63,5 +50,13 @@ class TeamsViewModel(
         viewModelScope.launch {
             _teamRoster.value = teamRepository.getCurrentTeamRoster(teamAbbrev = teamAbbrev)
         }
+    }
+
+    /**
+     * Purpose - get team by abbreviation - get a team by its abbreviation
+     * @return Unit
+     */
+    fun getTeamByAbbreviation(teamAbbrev: String): Standing? {
+        return _standingsResponse.value.find { it.teamAbbrev.default == teamAbbrev }
     }
 }

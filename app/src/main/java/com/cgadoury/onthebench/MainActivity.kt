@@ -114,26 +114,19 @@ class MainActivity : ComponentActivity() {
                             GamesScreen(
                                 modifier = Modifier,
                                 gamesViewModel = gamesViewModel,
+                                teamsViewModel = teamsViewModel,
                                 navController = navController
                                 )
                         }
 
                         composable(Destination.TeamDetail.route) { navBackStackEntry ->
-                            val team by teamsViewModel.team
                             val teamAbbrev = navBackStackEntry.arguments?.getString("teamAbbrev")
-
-                            LaunchedEffect(teamAbbrev) {
-                                teamsViewModel.getTeamByAbbreviation(teamAbbrev = teamAbbrev!!)
-                            }
-
-                            team?.let {
-                                TeamDetailScreen(
-                                    modifier = Modifier,
-                                    team = team!!,
-                                    teamsViewModel = teamsViewModel,
-                                    navController = navController
-                                )
-                            }
+                            TeamDetailScreen(
+                                modifier = Modifier,
+                                team = teamsViewModel.getTeamByAbbreviation(teamAbbrev = teamAbbrev!!)!!,
+                                teamsViewModel = teamsViewModel,
+                                navController = navController
+                            )
                         }
 
                         composable(Destination.PlayerDetail.route) { navBackStackEntry ->

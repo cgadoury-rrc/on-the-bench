@@ -21,8 +21,10 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,8 +38,11 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.cgadoury.onthebench.api.model.game.Game
+import com.cgadoury.onthebench.api.model.game.GameTeams
 import com.cgadoury.onthebench.mvvm.GamesViewModel
+import com.cgadoury.onthebench.mvvm.TeamsViewModel
 import com.cgadoury.onthebench.utility.loadSvgImage
+import com.cgadoury.onthebench.utility.predictGameWinner
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -54,6 +59,7 @@ import java.time.format.DateTimeFormatter
 fun GamesScreen(
     modifier: Modifier,
     gamesViewModel: GamesViewModel,
+    teamsViewModel: TeamsViewModel,
     navController: NavController
 ) {
     Box(
@@ -82,6 +88,7 @@ fun GamesScreen(
                 GameDayTab(
                     modifier = Modifier,
                     gameDayData = gamesYesterday,
+                    teamsViewModel = teamsViewModel,
                     navController = navController
                 )
             }
@@ -89,6 +96,7 @@ fun GamesScreen(
                 GameDayTab(
                     modifier = Modifier,
                     gameDayData = gamesToday,
+                    teamsViewModel = teamsViewModel,
                     navController = navController
                 )
             }
@@ -96,6 +104,7 @@ fun GamesScreen(
                 GameDayTab(
                     modifier = Modifier,
                     gameDayData = gamesTomorrow,
+                    teamsViewModel = teamsViewModel,
                     navController = navController
                 )
             }
@@ -115,6 +124,7 @@ fun GamesScreen(
 fun GameDayTab(
     modifier: Modifier,
     gameDayData: List<Game>,
+    teamsViewModel: TeamsViewModel,
     navController: NavController
 ): Unit {
     LazyColumn {
@@ -122,6 +132,7 @@ fun GameDayTab(
             GameCard(
                 modifier = modifier.padding(5.dp),
                 game = game,
+                teamsViewModel = teamsViewModel,
                 navController = navController
             )
         }
@@ -140,6 +151,7 @@ fun GameDayTab(
 fun GameCard(
     modifier: Modifier,
     game: Game,
+    teamsViewModel: TeamsViewModel,
     navController: NavController
 ): Unit {
     Card(
@@ -149,7 +161,9 @@ fun GameCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
-
+        val winPrediction = remember(game.id) {
+            predictGameWinner(game = game, teamsViewModel = teamsViewModel)
+        }
         GameInfoRow(game)
         Row(
            modifier = Modifier
