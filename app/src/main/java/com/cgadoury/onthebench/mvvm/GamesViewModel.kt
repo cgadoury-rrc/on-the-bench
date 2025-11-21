@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 
 /**
  * Purpose - games view model - handle game data between ui and data layers
+ * @param gameRepository: The repository to retrieve game data from
  * @return GamesViewModel
  */
 class GamesViewModel (

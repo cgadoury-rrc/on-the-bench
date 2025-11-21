@@ -36,11 +36,9 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.cgadoury.onthebench.api.model.game.Game
-import com.cgadoury.onthebench.api.model.game.HomeTeam
 import com.cgadoury.onthebench.mvvm.GamesViewModel
-import com.cgadoury.onthebench.utility.SvgDecoderUtil
+import com.cgadoury.onthebench.utility.SvgLoaderUtil
 import java.time.Instant
-import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -194,7 +192,7 @@ fun TeamScore(
     abbrev: String,
     logo: String,
     isScoreOnLeft: Boolean
-) {
+): Unit {
     if (isScoreOnLeft) {
         Text(
             text = score,
@@ -214,8 +212,8 @@ fun TeamScore(
             ).data(logo)
                 .build(),
             contentDescription = "Team Logo",
-            imageLoader = SvgDecoderUtil()
-                .decodeSvgImage(
+            imageLoader = SvgLoaderUtil()
+                .loadSvgImage(
                     context = LocalContext.current
                 )
         )

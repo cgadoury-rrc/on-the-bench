@@ -19,7 +19,8 @@ class GameRepositoryImpl(
     private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     /**
-     * Purpose - get games today - get today's nhl games
+     * Purpose - get all games - get nhl games for yesterday, today, and tomorrow
+     * @return Triple<List<Game>, List<Game>, List<Game>>
      */
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun getAllGames(): Triple<List<Game>, List<Game>, List<Game>> {
@@ -32,10 +33,18 @@ class GameRepositoryImpl(
         }
     }
 
+    /**
+     * Purpose - get games today - get a list of nhl games on the current day
+     * @return List<Game>
+     */
     suspend fun getGamesToday(): List<Game> {
         return nhlApiService.getGamesToday().body()?.games ?: emptyList()
     }
 
+    /**
+     * Purpose - get games yesterday - get a list of nhl games from yesterday
+     * @return List<Game>
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getGamesYesterday(): List<Game> {
         return nhlApiService.getGamesByDate(
@@ -43,6 +52,10 @@ class GameRepositoryImpl(
         ).body()?.games ?: emptyList()
     }
 
+    /**
+     * Purpose - get games tomorrow - get a list of nhl games for tomorrow
+     * @return List<Game>
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getGamesTomorrow(): List<Game> {
         return nhlApiService.getGamesByDate(

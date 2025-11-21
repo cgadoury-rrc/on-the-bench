@@ -5,8 +5,8 @@ import com.cgadoury.onthebench.api.model.game.Game
 interface GameRepository {
 
     /**
-     * Purpose - get games today - get today's nhl games
-     * @return List<Game>
+     * Purpose - get all games - get nhl games for yesterday, today, and tomorrow
+     * @return Triple<List<Game>, List<Game>, List<Game>>
      */
     suspend fun getAllGames(): Triple<List<Game>, List<Game>, List<Game>>
 }
