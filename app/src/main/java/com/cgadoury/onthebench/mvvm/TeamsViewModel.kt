@@ -56,7 +56,7 @@ class TeamsViewModel(
      * Purpose - get team by abbreviation - get a team by its abbreviation
      * @return Unit
      */
-    fun getTeamByAbbreviation(teamAbbrev: String): Standing? {
-        return _standingsResponse.value.find { it.teamAbbrev.default == teamAbbrev }
+    fun getTeamByAbbreviation(teamAbbrev: String): Standing {
+        return _standingsResponse.value.find { it.teamAbbrev.default == teamAbbrev } ?: Standing()
     }
 }

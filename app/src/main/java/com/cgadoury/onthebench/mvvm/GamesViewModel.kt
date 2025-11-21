@@ -1,7 +1,9 @@
 package com.cgadoury.onthebench.mvvm
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +14,7 @@ import com.cgadoury.onthebench.repository.GameRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.util.Random
 
 /**
  * Purpose - games view model - handle game data between ui and data layers
@@ -28,6 +31,8 @@ class GamesViewModel (
     val gamesYesterdayResponse: State<List<Game>> = _gamesYesterdayResponse
     private var _gamesTomorrowResponse = mutableStateOf<List<Game>>(emptyList())
     val gamesTomorrowResponse: State<List<Game>> = _gamesTomorrowResponse
+
+    val wildcard = Random().nextInt(1, 100)
 
     init {
         startSmartPolling()
