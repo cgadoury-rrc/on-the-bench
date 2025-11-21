@@ -278,13 +278,13 @@ fun PlayerStatCard(
                 modifier = Modifier.weight(1f),
                 label = "S/GP",
                 value = String.format("%.2f", shotsPerGame),
-                isGood = shotsPerGame > 1.5
+                isGood = shotsPerGame > 1
             )
             StatusStatCard(
                 modifier = Modifier.weight(1f),
                 label = "Shooting %",
                 value = "${shootingPctg}%",
-                isGood = shootingPctg > 15
+                isGood = shootingPctg > 10
             )
         }
     }
