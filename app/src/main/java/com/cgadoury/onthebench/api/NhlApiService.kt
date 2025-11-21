@@ -24,8 +24,8 @@ interface NhlApiService {
     @GET("v1/score/{date}")
     suspend fun getGamesByDate(@Path("date") date: String): Response<GameData>
 
-    @GET("v1/roster/{team}/current")
-    suspend fun getCurrentRoster(@Path("team") team: String): Call<RosterData>
+    @GET("v1/roster/{teamAbbrev}/current")
+    suspend fun getCurrentRoster(@Path("teamAbbrev") team: String): Response<RosterData>
 
     @GET("v1/skater-stats-leaders/current?categories=points&limit=50")
     suspend fun getTop50SkaterPoints(): Response<PointsData>

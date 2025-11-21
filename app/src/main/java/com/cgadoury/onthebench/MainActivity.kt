@@ -129,7 +129,9 @@ class MainActivity : ComponentActivity() {
                             team?.let {
                                 TeamDetailScreen(
                                     modifier = Modifier,
-                                    team = team!!
+                                    team = team!!,
+                                    teamsViewModel = teamsViewModel,
+                                    navController = navController
                                 )
                             }
                         }

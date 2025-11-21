@@ -2,6 +2,7 @@ package com.cgadoury.onthebench.repository
 
 import android.util.Log
 import com.cgadoury.onthebench.api.NhlApiService
+import com.cgadoury.onthebench.api.model.roster.RosterData
 import com.cgadoury.onthebench.api.model.standing.Standing
 import com.cgadoury.onthebench.api.model.standing.TeamAbbrev
 import com.cgadoury.onthebench.db.TeamDao
@@ -56,4 +57,8 @@ class TeamRepositoryImpl(
      */
     override suspend fun getTeamByAbbreviation(teamAbbrev: String): Standing =
         withContext(Dispatchers.IO) { teamDao.getTeamByAbbreviation(teamAbbrev) }
+
+    override suspend fun getCurrentTeamRoster(teamAbbrev: String): RosterData? {
+        return nhlApiService.getCurrentRoster(teamAbbrev).body()
+    }
 }

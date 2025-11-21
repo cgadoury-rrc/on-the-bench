@@ -105,7 +105,6 @@ fun TeamCard(
                     .size(65.dp)
                     .clip(CircleShape)
                     .background(Color.Gray.copy(alpha = 0.1f))
-                    .padding(4.dp)
                     .align(Alignment.CenterVertically),
                 model = ImageRequest.Builder(
                     LocalContext.current

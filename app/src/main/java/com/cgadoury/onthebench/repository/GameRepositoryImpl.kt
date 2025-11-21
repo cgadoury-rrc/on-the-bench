@@ -18,11 +18,6 @@ class GameRepositoryImpl(
     @RequiresApi(Build.VERSION_CODES.O)
     private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
-    private var gamesToday: List<Game> = emptyList()
-    private var gamesYesterday: List<Game> = emptyList()
-    private var gamesTomorrow: List<Game> = emptyList()
-
-
     /**
      * Purpose - get games today - get today's nhl games
      */
