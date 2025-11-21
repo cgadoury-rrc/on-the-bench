@@ -39,6 +39,7 @@ import com.cgadoury.onthebench.api.model.player.Player
 import com.cgadoury.onthebench.ui.components.StatItem
 import com.cgadoury.onthebench.ui.components.StatusStatCard
 import com.cgadoury.onthebench.ui.theme.TeamColors
+import com.cgadoury.onthebench.utility.loadSvgImage
 
 /**
  * Purpose - player detail screen - show details for a specific player
@@ -99,11 +100,7 @@ fun PlayerDetailScreen(
                     ).data(player.headshot)
                         .build(),
                     contentDescription = null,
-                    imageLoader = ImageLoader.Builder(
-                        LocalContext.current
-                    ).components {
-                        add(SvgDecoder.Factory())
-                    }.build()
+                    imageLoader = loadSvgImage(context = LocalContext.current)
                 )
                 Spacer(modifier = Modifier.height(14.dp))
                 Text(

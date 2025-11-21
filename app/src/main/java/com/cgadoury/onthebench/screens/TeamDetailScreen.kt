@@ -44,7 +44,7 @@ import com.cgadoury.onthebench.mvvm.TeamsViewModel
 import com.cgadoury.onthebench.ui.components.StatusStatCard
 import com.cgadoury.onthebench.ui.components.StatItem
 import com.cgadoury.onthebench.ui.theme.TeamColors
-import com.cgadoury.onthebench.utility.SvgLoaderUtil
+import com.cgadoury.onthebench.utility.loadSvgImage
 
 /**
  * Purpose - team detail screen - display team details including stats and rosters
@@ -197,10 +197,7 @@ fun TeamHeader(
                 ).data(team.teamLogo)
                     .build(),
                 contentDescription = null,
-                imageLoader = SvgLoaderUtil()
-                    .loadSvgImage(
-                        context = LocalContext.current
-                    )
+                imageLoader = loadSvgImage(context = LocalContext.current)
             )
             Spacer(modifier = Modifier.height(14.dp))
             Text(
@@ -311,10 +308,7 @@ fun RosterPlayerRow(
             ).data(rosterPlayer.headshot)
                 .build(),
             contentDescription = null,
-            imageLoader = SvgLoaderUtil()
-                .loadSvgImage(
-                    context = LocalContext.current
-                )
+            imageLoader = loadSvgImage(context = LocalContext.current)
         )
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {

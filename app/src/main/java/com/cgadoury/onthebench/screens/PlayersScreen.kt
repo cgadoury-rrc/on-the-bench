@@ -37,7 +37,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.cgadoury.onthebench.api.model.point.Point
 import com.cgadoury.onthebench.mvvm.PlayersViewModel
-import com.cgadoury.onthebench.utility.SvgLoaderUtil
+import com.cgadoury.onthebench.utility.loadSvgImage
 
 /**
  * Purpose - players screen - displays top 50 nhl players
@@ -108,8 +108,7 @@ fun PlayerCard(
                 ).data(player?.headshot)
                     .build(),
                 contentDescription = null,
-                imageLoader = SvgLoaderUtil()
-                    .loadSvgImage(
+                imageLoader = loadSvgImage(
                         context = LocalContext.current
                     )
             )
@@ -149,8 +148,7 @@ fun PlayerCard(
                        ).data(player?.teamLogo)
                             .build(),
                         contentDescription = "Team Logo",
-                        imageLoader = SvgLoaderUtil()
-                            .loadSvgImage(
+                        imageLoader = loadSvgImage(
                                 context = LocalContext.current
                             )
                     )

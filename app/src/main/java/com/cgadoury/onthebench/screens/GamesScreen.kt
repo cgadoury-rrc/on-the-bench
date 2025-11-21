@@ -37,7 +37,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.cgadoury.onthebench.api.model.game.Game
 import com.cgadoury.onthebench.mvvm.GamesViewModel
-import com.cgadoury.onthebench.utility.SvgLoaderUtil
+import com.cgadoury.onthebench.utility.loadSvgImage
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -212,10 +212,7 @@ fun TeamScore(
             ).data(logo)
                 .build(),
             contentDescription = "Team Logo",
-            imageLoader = SvgLoaderUtil()
-                .loadSvgImage(
-                    context = LocalContext.current
-                )
+            imageLoader = loadSvgImage(context = LocalContext.current)
         )
     }
     if (!isScoreOnLeft) {
