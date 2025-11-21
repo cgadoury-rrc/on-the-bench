@@ -122,37 +122,34 @@ fun PlayerDetailScreen(
                 ) {
                     StatItem(
                         label = "GP",
-                        value = if (player.seasonTotals.isNotEmpty()) player.seasonTotals[player.seasonTotals.size-1].gamesPlayed else 0,
+                        value = if (player.seasonTotals.isNotEmpty())
+                            player.seasonTotals[player.seasonTotals.size-1].gamesPlayed else 0
                     )
                     StatItem(
                         label = "G",
-                        value = player.featuredStats.regularSeason.subSeason.goals,
+                        value = player.featuredStats.regularSeason.subSeason.goals
                     )
                     StatItem(
                         label = "A",
-                        value = player.featuredStats.regularSeason.subSeason.assists,
+                        value = player.featuredStats.regularSeason.subSeason.assists
                     )
                     StatItem(
                         label = "+/-",
-                        value = player.featuredStats.regularSeason.subSeason.plusMinus,
+                        value = player.featuredStats.regularSeason.subSeason.plusMinus
                     )
                     StatItem(
                         label = "PIM",
-                        value = player.featuredStats.regularSeason.subSeason.pim,
+                        value = player.featuredStats.regularSeason.subSeason.pim
                     )
                 }
             }
         }
-
         HorizontalDivider(modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp))
-
         PlayerStatCard(
             modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             player = player
         )
-
         HorizontalDivider(modifier = modifier.padding(horizontal = 16.dp))
-
         PlayerInfoCard(
             modifier = modifier.padding(16.dp),
             player = player,

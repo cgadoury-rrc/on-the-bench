@@ -7,33 +7,33 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Defensemen(
     @Json(name = "birthCity")
-    var birthCity: BirthCity?,
+    override var birthCity: BirthCity?,
     @Json(name = "birthCountry")
-    var birthCountry: String?,
+    override var birthCountry: String?,
     @Json(name = "birthDate")
-    var birthDate: String?,
+    override var birthDate: String?,
     @Json(name = "birthStateProvince")
-    var birthStateProvince: BirthStateProvince?,
+    override var birthStateProvince: BirthStateProvince?,
     @Json(name = "firstName")
-    var firstName: FirstName?,
+    override var firstName: FirstName?,
     @Json(name = "headshot")
-    var headshot: String?,
+    override var headshot: String?,
     @Json(name = "heightInCentimeters")
-    var heightInCentimeters: Int?,
+    override var heightInCentimeters: Int?,
     @Json(name = "heightInInches")
-    var heightInInches: Int?,
+    override var heightInInches: Int?,
     @Json(name = "id")
-    var id: Int?,
+    override var id: Int?,
     @Json(name = "lastName")
-    var lastName: LastName?,
+    override var lastName: LastName?,
     @Json(name = "positionCode")
-    var positionCode: String?,
+    override var positionCode: String?,
     @Json(name = "shootsCatches")
-    var shootsCatches: String?,
+    override var shootsCatches: String?,
     @Json(name = "sweaterNumber")
-    var sweaterNumber: Int?,
+    override var sweaterNumber: Int?,
     @Json(name = "weightInKilograms")
-    var weightInKilograms: Int?,
+    override var weightInKilograms: Int?,
     @Json(name = "weightInPounds")
-    var weightInPounds: Int?
-)
+    override var weightInPounds: Int?
+): RosterPlayerData

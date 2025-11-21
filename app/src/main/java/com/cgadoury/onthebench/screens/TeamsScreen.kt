@@ -32,13 +32,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil3.svg.SvgDecoder
-import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.cgadoury.onthebench.mvvm.TeamsViewModel
 import com.cgadoury.onthebench.api.model.standing.Standing
-import com.cgadoury.onthebench.utility.SvgDecoderUtil
+import com.cgadoury.onthebench.utility.SvgLoaderUtil
 
 /**
  * Purpose - Teams Screen - display NHL teams for the current season
@@ -105,15 +103,14 @@ fun TeamCard(
                     .size(65.dp)
                     .clip(CircleShape)
                     .background(Color.Gray.copy(alpha = 0.1f))
-                    .padding(4.dp)
                     .align(Alignment.CenterVertically),
                 model = ImageRequest.Builder(
                     LocalContext.current
                 ).data(team?.teamLogo)
                     .build(),
                 contentDescription = null,
-                imageLoader = SvgDecoderUtil()
-                    .decodeSvgImage(
+                imageLoader = SvgLoaderUtil()
+                    .loadSvgImage(
                         context = LocalContext.current
                     )
             )

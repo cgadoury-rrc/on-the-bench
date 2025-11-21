@@ -11,8 +11,13 @@ import androidx.wear.compose.navigation.currentBackStackEntryAsState
 import com.cgadoury.onthebench.R
 import com.cgadoury.onthebench.destinations.Destination
 
+/**
+ * Purpose - bottom nav bar - handle main navigation and display navigation bar
+ * @param navController: The application navigation controller
+ * @return Unit
+ */
 @Composable
-fun BottomNavBar(navController: NavController) {
+fun BottomNavBar(navController: NavController): Unit {
     NavigationBar {
         val navBackStackEntry = navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry.value?.destination

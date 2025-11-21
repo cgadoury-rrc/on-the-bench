@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cgadoury.onthebench.api.model.roster.RosterData
 import com.cgadoury.onthebench.api.model.standing.Standing
 import com.cgadoury.onthebench.repository.TeamRepository
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -23,6 +24,9 @@ class TeamsViewModel(
     private var _team = mutableStateOf<Standing?>(Standing())
     val team: State<Standing?> = _team
 
+    private var _teamRoster = mutableStateOf<RosterData?>(RosterData())
+    val teamRoster: State<RosterData?> = _teamRoster
+
     private var _isLoading = mutableStateOf<Boolean>(false)
     val isLoading: State<Boolean> = _isLoading
 
@@ -34,7 +38,7 @@ class TeamsViewModel(
      * Purpose - load teams - load teams using the teams repository
      * @return Unit
      */
-    private fun loadTeams() {
+    private fun loadTeams(): Unit {
         viewModelScope.launch {
             _standingsResponse.value = teamRepository.getAllTeams()
         }
@@ -44,9 +48,20 @@ class TeamsViewModel(
      * Purpose - get team by abbreviation - get a team by its abbreviation
      * @return Unit
      */
-    fun getTeamByAbbreviation(teamAbbrev: String) {
+    fun getTeamByAbbreviation(teamAbbrev: String): Unit {
         viewModelScope.launch {
             _team.value = teamRepository.getTeamByAbbreviation(teamAbbrev = teamAbbrev)
+        }
+    }
+
+    /**
+     * Purpose - get current team roster - gets a teams current roster
+     * @param teamAbbrev: The team abbreviation
+     * @return Unit
+     */
+    fun getCurrentTeamRoster(teamAbbrev: String): Unit {
+        viewModelScope.launch {
+            _teamRoster.value = teamRepository.getCurrentTeamRoster(teamAbbrev = teamAbbrev)
         }
     }
 }

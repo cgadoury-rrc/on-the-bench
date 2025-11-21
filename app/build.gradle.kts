@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.common)
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
     ksp(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
