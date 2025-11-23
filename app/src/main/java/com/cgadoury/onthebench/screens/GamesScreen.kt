@@ -1,6 +1,7 @@
 package com.cgadoury.onthebench.screens
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -306,8 +307,9 @@ fun GameScoreClock(game: Game) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val isIntermission = game.clock?.inIntermission ?: false
         if (game.period.toString() != "null") {
-            Text(text = "P${game.period.toString()} ")
+            Text(text = (if (isIntermission) "INT " else "P: " + game.period.toString()))
             Text(text = game.clock?.timeRemaining.toString())
         }
         Text(text="VS")
@@ -315,7 +317,7 @@ fun GameScoreClock(game: Game) {
 }
 
 /**
- * Purpose - predicted win percentage bar - display predicted win percentages
+ * Purpose - predicted win percentage bar - display predicted chance to win
  * and colored bar representing each team
  * @param modifier: The application modifier
  * @param homePercent: The home teams predicted chance of winning
@@ -342,6 +344,11 @@ fun PredictedWinPercentageBar(
             text = "${awayPercent.toInt()}%",
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
+        )
+        Text(
+            text = "Win-O-Meter",
+            fontSize = 14.sp,
+            fontWeight = FontWeight.SemiBold
         )
         Text(
             text = "${homePercent.toInt()}%",

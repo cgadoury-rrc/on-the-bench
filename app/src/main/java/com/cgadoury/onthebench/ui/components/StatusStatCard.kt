@@ -38,7 +38,7 @@ fun StatusStatCard(
     ) {
         Card(
             modifier = Modifier
-                .padding(horizontal = 10.dp)
+                .padding(horizontal = 8.dp)
                 .shadow(
                     elevation = 2.dp,
                     shape = RoundedCornerShape(16.dp),
@@ -63,7 +63,7 @@ fun StatusStatCard(
         Text(
             text = label,
             fontSize = 14.sp,
-            color = Color.Gray
+            color = Color.DarkGray
         )
     }
 }

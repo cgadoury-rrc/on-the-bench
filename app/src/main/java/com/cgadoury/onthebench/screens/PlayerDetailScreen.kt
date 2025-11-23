@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -31,10 +32,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
-import coil3.svg.SvgDecoder
 import com.cgadoury.onthebench.api.model.player.Player
 import com.cgadoury.onthebench.ui.components.StatItem
 import com.cgadoury.onthebench.ui.components.StatusStatCard
@@ -43,7 +42,7 @@ import com.cgadoury.onthebench.utility.loadSvgImage
 
 /**
  * Purpose - player detail screen - show details for a specific player
- * @param modifier: The modifier to use
+ * @param modifier: The application modifier
  * @param player: The player to handle
  * @return Unit
  */
@@ -52,105 +51,148 @@ fun PlayerDetailScreen(
     modifier: Modifier,
     player: Player
 ) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+    val teamAbbrev = player.currentTeamAbbrev
+    val teamColor = TeamColors.colors[teamAbbrev] ?: Color.White
+    val backgroundColors = listOf(
+        teamColor,
+        teamColor.copy(alpha = 0.8f),
+        teamColor.copy(alpha = 0.5f),
+        teamColor.copy(alpha = 0.2f),
+        MaterialTheme.colorScheme.surface
+    )
+
+    LazyColumn(
+        modifier = modifier.fillMaxSize()
     ) {
-        val teamAbbrev = player.currentTeamAbbrev
-        val teamColor = TeamColors.colors[teamAbbrev] ?: Color.White
-        val backgroundColors = listOf(
-            teamColor,
-            teamColor.copy(alpha = 0.8f),
-            teamColor.copy(alpha = 0.5f),
-            teamColor.copy(alpha = 0.2f),
-            MaterialTheme.colorScheme.surface
-        )
-        Box(
-            modifier
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = backgroundColors
-                    )
+        item {
+            PlayerHeader(
+                modifier = modifier,
+                player = player,
+                teamColor = teamColor,
+                backgroundColors = backgroundColors
+            )
+        }
+        item {
+            HorizontalDivider(modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+        }
+
+        item {
+            Text(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                text = "Player Stats",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineMedium
+            )
+        }
+
+        item {
+            PlayerStatCard(
+                modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                player = player
+            )
+        }
+
+        item {
+            Text(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                text = "Player Info",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineMedium
+            )
+        }
+
+        item {
+            PlayerInfoCard(
+                modifier = modifier.padding(16.dp),
+                player = player,
+            )
+        }
+
+    }
+}
+
+@Composable
+fun PlayerHeader(
+    modifier: Modifier,
+    player: Player,
+    teamColor: Color,
+    backgroundColors: List<Color>
+) {
+    Box(
+        modifier
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = backgroundColors
                 )
+            )
+    ) {
+        Column(
+            modifier = modifier
+                .padding(
+                    vertical = 26.dp,
+                    horizontal = 16.dp
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = modifier
-                    .padding(
-                        vertical = 26.dp,
-                        horizontal = 16.dp
-                    ),
-                horizontalAlignment = Alignment.CenterHorizontally
+            AsyncImage(
+                modifier = Modifier
+                    .size(110.dp)
+                    .shadow(
+                        elevation = 16.dp,
+                        shape = CircleShape,
+                        clip = true
+                    )
+                    .background(
+                        color = Color.White,
+                        shape = CircleShape
+                    )
+                    .clip(CircleShape)
+                    .background(teamColor),
+                model = ImageRequest.Builder(
+                    LocalContext.current
+                ).data(player.headshot)
+                    .build(),
+                contentDescription = null,
+                imageLoader = loadSvgImage(context = LocalContext.current)
+            )
+            Spacer(modifier = Modifier.height(14.dp))
+            Text(
+                text = "${player.firstName?.default} ${player.lastName?.default}",
+                style = MaterialTheme.typography.headlineLarge,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical=8.dp, horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                AsyncImage(
-                    modifier = Modifier
-                        .size(110.dp)
-                        .shadow(
-                            elevation = 16.dp,
-                            shape = CircleShape,
-                            clip = true
-                        )
-                        .background(
-                            color = Color.White,
-                            shape = CircleShape
-                        )
-                        .clip(CircleShape)
-                        .background(teamColor),
-                    model = ImageRequest.Builder(
-                        LocalContext.current
-                    ).data(player.headshot)
-                        .build(),
-                    contentDescription = null,
-                    imageLoader = loadSvgImage(context = LocalContext.current)
+                StatItem(
+                    label = "GP",
+                    value = if (player.seasonTotals.isNotEmpty())
+                        player.seasonTotals[player.seasonTotals.size-1].gamesPlayed else 0
                 )
-                Spacer(modifier = Modifier.height(14.dp))
-                Text(
-                    text = "${player.firstName?.default} ${player.lastName?.default}",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+                StatItem(
+                    label = "G",
+                    value = player.featuredStats.regularSeason.subSeason.goals
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical=8.dp, horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    StatItem(
-                        label = "GP",
-                        value = if (player.seasonTotals.isNotEmpty())
-                            player.seasonTotals[player.seasonTotals.size-1].gamesPlayed else 0
-                    )
-                    StatItem(
-                        label = "G",
-                        value = player.featuredStats.regularSeason.subSeason.goals
-                    )
-                    StatItem(
-                        label = "A",
-                        value = player.featuredStats.regularSeason.subSeason.assists
-                    )
-                    StatItem(
-                        label = "+/-",
-                        value = player.featuredStats.regularSeason.subSeason.plusMinus
-                    )
-                    StatItem(
-                        label = "PIM",
-                        value = player.featuredStats.regularSeason.subSeason.pim
-                    )
-                }
+                StatItem(
+                    label = "A",
+                    value = player.featuredStats.regularSeason.subSeason.assists
+                )
+                StatItem(
+                    label = "+/-",
+                    value = player.featuredStats.regularSeason.subSeason.plusMinus
+                )
+                StatItem(
+                    label = "PIM",
+                    value = player.featuredStats.regularSeason.subSeason.pim
+                )
             }
         }
-        HorizontalDivider(modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp))
-        PlayerStatCard(
-            modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            player = player
-        )
-        HorizontalDivider(modifier = modifier.padding(horizontal = 16.dp))
-        PlayerInfoCard(
-            modifier = modifier.padding(16.dp),
-            player = player,
-        )
     }
 }
 
@@ -169,21 +211,23 @@ fun PlayerInfoCard(
         modifier = modifier
             .fillMaxWidth()
     ) {
+        val playerBirthStateProvince: String? = player.birthStateProvince?.default
         Column(modifier = Modifier.weight(1f)) {
             PlayerInfoItem("Height", "${player.heightInCentimeters} cm")
             PlayerInfoItem("Weight", "${player.weightInPounds} lb")
             PlayerInfoItem(
                 "Born",
                 "${player.birthCity?.default}, " +
-                        "${player.birthStateProvince?.default}, " +
+                        "${playerBirthStateProvince ?: ""} " +
                         player.birthCountry
             )
             PlayerInfoItem("Shot", player.shootsCatches)
             PlayerInfoItem("Birthdate", player.birthDate)
-            PlayerInfoItem("Draft", "${player.draftDetails.year}, " +
+            PlayerInfoItem("Draft",
+                "${player.draftDetails.year}, " +
                     "${player.draftDetails.teamAbbrev}, " +
-                    "round ${player.draftDetails.round}, " +
-                    "pick ${player.draftDetails.pickInRound}")
+                    "Round ${player.draftDetails.round}, " +
+                    "Pick ${player.draftDetails.pickInRound}")
         }
     }
 }
@@ -201,10 +245,13 @@ fun PlayerInfoItem(
     value: String,
     color: Color = Color.Black
 ) {
-    Row(verticalAlignment = Alignment.Top) {
+    Row(
+        modifier = Modifier.padding(vertical = 2.dp),
+        verticalAlignment = Alignment.Top
+    ) {
         Text(
             text = label,
-            fontSize = 14.sp,
+            fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             color = color,
             softWrap = true
@@ -212,8 +259,8 @@ fun PlayerInfoItem(
         Spacer(Modifier.width(8.dp))
         Text(
             text = value,
-            fontSize = 12.sp,
-            color = Color.Gray,
+            fontSize = 14.sp,
+            color = Color.DarkGray,
             softWrap = true
         )
     }
@@ -235,12 +282,6 @@ fun PlayerStatCard(
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     ) {
-        Text(
-            modifier = Modifier.padding(bottom = 18.dp),
-            text = "Player Stats",
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineMedium
-        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -261,7 +302,6 @@ fun PlayerStatCard(
             } else {
                 0.0
             }
-
             StatusStatCard(
                 modifier = Modifier.weight(1f),
                 label = "P/GP",
@@ -279,6 +319,41 @@ fun PlayerStatCard(
                 label = "Shooting %",
                 value = "${shootingPctg}%",
                 isGood = shootingPctg > 10
+            )
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            val toi = player.seasonTotals.lastOrNull()?.avgToi ?: ""
+            val ppPoints = player.seasonTotals.lastOrNull()?.powerPlayPoints
+            val foPctg =
+                player
+                    .seasonTotals
+                    .lastOrNull()
+                    ?.faceoffWinningPctg
+                    ?.times(100) ?: 0.0
+            val gwg = player.seasonTotals.lastOrNull()?.gameWinningGoals ?: 0
+
+            StatusStatCard(
+                modifier = Modifier.weight(1f),
+                label = "PP Points",
+                value = ppPoints.toString(),
+                isGood = (ppPoints ?: 0) > 3
+            )
+            StatusStatCard(
+                modifier = Modifier.weight(1f),
+                label = "FO %",
+                value = foPctg.toInt().toString() + "%",
+                isGood = foPctg > 50
+            )
+            StatusStatCard(
+                modifier = Modifier.weight(1f),
+                label = "GWG",
+                value = gwg.toString(),
+                isGood = gwg > 0
             )
         }
     }
