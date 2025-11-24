@@ -24,13 +24,13 @@ fun StatItem(
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = value?.toString() ?: "0",
-            fontSize = 28.sp,
+            fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
             color = color
         )
         Text(
             text = label,
-            fontSize = 14.sp,
+            fontSize = 16.sp,
             color = color
         )
     }

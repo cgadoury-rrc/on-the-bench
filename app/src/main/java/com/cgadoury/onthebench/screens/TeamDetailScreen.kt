@@ -16,9 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -40,9 +37,10 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.cgadoury.onthebench.api.model.roster.RosterPlayerData
 import com.cgadoury.onthebench.api.model.standing.Standing
+import com.cgadoury.onthebench.api.model.stat.StatData
 import com.cgadoury.onthebench.mvvm.TeamsViewModel
-import com.cgadoury.onthebench.ui.components.StatusStatCard
 import com.cgadoury.onthebench.ui.components.StatItem
+import com.cgadoury.onthebench.ui.components.StatCardRow
 import com.cgadoury.onthebench.ui.theme.TeamColors
 import com.cgadoury.onthebench.utility.loadSvgImage
 
@@ -234,10 +232,8 @@ fun TeamStatCard(
     modifier: Modifier,
     team: Standing,
 ) {
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+    Column(
+        modifier = modifier
     ) {
         Text(
             modifier = Modifier.padding(bottom = 18.dp),
@@ -245,36 +241,101 @@ fun TeamStatCard(
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineMedium
         )
-        Row (
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            val winPctgAsInt = (team.winPctg * 100).toInt()
-            val isWinPctgGood = winPctgAsInt > 50
-            val isGoalDiffGood = team.goalDifferential > 0
-            val isStreakGood = team.streakCode.startsWith("W")
-
-            StatusStatCard(
-                modifier = Modifier.weight(1f),
-                label ="Win Pctg.",
-                value = "${winPctgAsInt}%",
-                isGood = isWinPctgGood
-            )
-            StatusStatCard(
-                modifier = Modifier.weight(1f),
+        val hasPlayedGames = team.gamesPlayed > 0
+        val overallWinPctg = (team.winPctg * 100).toInt()
+        val overallStatData = listOf<StatData>(
+            StatData(
+                label = "Win %",
+                value = "$overallWinPctg%",
+                isGood = overallWinPctg > 50
+            ),
+            StatData(
                 label = "Goal Diff.",
                 value = team.goalDifferential.toString(),
-                isGood = isGoalDiffGood
-            )
-            StatusStatCard(
-                modifier = Modifier.weight(1f),
+                isGood = team.goalDifferential > 0
+            ),
+            StatData(
                 label = "Streak",
                 value = team.streakCode + team.streakCount,
-                isGood = isStreakGood
+                isGood = team.streakCode.startsWith("W")
             )
+        )
+        StatCardRow(
+            modifier = modifier,
+            title = "Overall",
+            stats = overallStatData
+        )
+
+        val homeWinPctg: Double = if (hasPlayedGames && team.wins > 0) {
+            team.homeWins / team.wins.toDouble() * 100
+        } else {
+            0.0
         }
+        val homeGoalsForPerGame: Double = if (hasPlayedGames) {
+            team.homeGoalsFor / team.homeGamesPlayed.toDouble()
+        } else {
+            0.0
+        }
+        val homeGoalsAgainstPerGame: Double = if (hasPlayedGames) {
+            team.homeGoalsAgainst / team.homeGamesPlayed.toDouble()
+        } else {
+            0.0
+        }
+        val homeStatData = listOf(
+            StatData(
+                label = "Win %",
+                value = "${homeWinPctg.toInt()}%",
+                isGood = homeWinPctg.toInt() > 49.5
+            ),
+            StatData(
+                label = "GF/GP",
+                value = String.format("%.2f", homeGoalsForPerGame),
+                isGood = homeGoalsForPerGame > 2.5
+            ),
+            StatData(
+                label = "GA/GP",
+                value = String.format("%.2f", homeGoalsAgainstPerGame),
+                isGood = homeGoalsAgainstPerGame < 2.5
+            )
+        )
+        StatCardRow(
+            modifier = modifier,
+            title = "Home",
+            stats = homeStatData
+        )
+
+        val awayGoalsForPerGame: Double = if (hasPlayedGames) {
+            team.roadGoalsFor / team.roadGamesPlayed.toDouble()
+        } else {
+            0.0
+        }
+        val awayGoalsAgainstPerGame: Double = if (hasPlayedGames) {
+            team.roadGoalsAgainst / team.roadGamesPlayed.toDouble()
+        } else {
+            0.0
+        }
+        val awayStatData: List<StatData> = listOf(
+            StatData(
+                label = "Win %",
+                value = "${100 - homeWinPctg.toInt()}%",
+                isGood = 100 - homeWinPctg.toInt() > 49.5
+            ),
+            StatData(
+                label = "GF/GP",
+                value = String.format("%.2f", awayGoalsForPerGame),
+                isGood = awayGoalsForPerGame > 3
+            ),
+            StatData(
+                label = "GA/GP",
+                value = String.format("%.2f", awayGoalsAgainstPerGame),
+                isGood = awayGoalsAgainstPerGame < 2.5
+            )
+        )
+        StatCardRow(
+            modifier = modifier,
+            title = "Away",
+            stats = awayStatData
+            )
     }
 }
 
@@ -295,13 +356,13 @@ fun RosterPlayerRow(
         modifier = modifier
             .fillMaxWidth()
             .clickable { navController.navigate("playerDetail/${rosterPlayer.id}") },
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         AsyncImage(
             modifier = Modifier
                 .size(44.dp)
                 .clip(CircleShape)
-                .background(Color.Gray.copy(alpha = 0.1f))
+                .background(Color.Gray.copy(alpha = 0.3f))
                 .align(Alignment.CenterVertically),
             model = ImageRequest.Builder(
                 LocalContext.current

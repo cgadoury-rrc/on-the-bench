@@ -47,7 +47,7 @@ fun StatusStatCard(
                 .fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(
-                containerColor = if (isGood) Color(0xFF4C70AF) else Color(0xFFF44336)
+                containerColor = if (isGood) Color(0xFF81C784) else Color(0xFFFFAB91)
             )
         ) {
             Text(
