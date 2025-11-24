@@ -12,7 +12,7 @@ import com.cgadoury.onthebench.api.model.standing.TeamAbbrev
 interface TeamDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAllTeams(teams: List<Standing>)
+    suspend fun insertAllTeams(teams: List<Standing>)
 
     @Delete
     suspend fun delete(team: Standing)

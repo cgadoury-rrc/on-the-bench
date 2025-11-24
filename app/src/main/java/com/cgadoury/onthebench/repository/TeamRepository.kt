@@ -18,7 +18,7 @@ interface TeamRepository {
      * @param teams: The list of teams to insert
      * @return Unit
      */
-    fun insertAllTeams(teams: List<Standing>): Unit
+    suspend fun insertAllTeams(teams: List<Standing>): Unit
 
     /**
      * Purpose - get current team roster - gets a teams current roster

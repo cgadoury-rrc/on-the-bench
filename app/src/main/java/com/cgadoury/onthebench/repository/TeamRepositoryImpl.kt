@@ -2,9 +2,10 @@ package com.cgadoury.onthebench.repository
 
 import android.util.Log
 import com.cgadoury.onthebench.api.NhlApiService
+import com.cgadoury.onthebench.api.model.last_updated.LastUpdated
 import com.cgadoury.onthebench.api.model.roster.RosterData
 import com.cgadoury.onthebench.api.model.standing.Standing
-import com.cgadoury.onthebench.api.model.standing.TeamAbbrev
+import com.cgadoury.onthebench.db.LastUpdatedDao
 import com.cgadoury.onthebench.db.TeamDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,7 +16,8 @@ import kotlinx.coroutines.withContext
  */
 class TeamRepositoryImpl(
     private val nhlApiService: NhlApiService,
-    private val teamDao: TeamDao
+    private val teamDao: TeamDao,
+    private val lastUpdatedDao: LastUpdatedDao
 ): TeamRepository {
     private var teams: List<Standing> = emptyList()
 
@@ -26,10 +28,19 @@ class TeamRepositoryImpl(
      */
     override suspend fun getAllTeams(): List<Standing> {
         val cachedTeams = withContext(Dispatchers.IO){ teamDao.getAllTeams() }
+        val lastUpdated = withContext(Dispatchers.IO){ lastUpdatedDao.getLastUpdated() }
 
-        if (cachedTeams.isEmpty()) {
+        val currentTime = System.currentTimeMillis()
+        val isCacheExpired =
+            lastUpdated?.id == null
+                    || currentTime - lastUpdated.lastUpdated > 86400000L
+
+        if (cachedTeams.isEmpty() || isCacheExpired) {
             teams = nhlApiService.getCurrentStandings().body()?.standings?.filterNotNull() ?: emptyList()
-            withContext(Dispatchers.IO) { teamDao.insertAllTeams(teams = teams) }
+            withContext(Dispatchers.IO) {
+                teamDao.insertAllTeams(teams = teams)
+                lastUpdatedDao.insertLastUpdated(LastUpdated(1, currentTime))
+            }
 
             Log.i("Data", "Using api")
         } else {
@@ -46,7 +57,7 @@ class TeamRepositoryImpl(
      * @param teams: The list of teams to insert
      * @return Unit
      */
-    override fun insertAllTeams(teams: List<Standing>): Unit =
+    override suspend fun insertAllTeams(teams: List<Standing>): Unit =
         teamDao.insertAllTeams(teams=teams)
 
     /**

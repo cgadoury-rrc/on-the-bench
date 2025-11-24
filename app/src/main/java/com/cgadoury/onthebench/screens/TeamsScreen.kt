@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
@@ -36,6 +37,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.cgadoury.onthebench.mvvm.TeamsViewModel
 import com.cgadoury.onthebench.api.model.standing.Standing
+import com.cgadoury.onthebench.ui.theme.TeamColors
 import com.cgadoury.onthebench.utility.loadSvgImage
 
 /**
@@ -83,12 +85,14 @@ fun TeamCard(
     team: Standing?,
     navController: NavController
 ) {
+    val teamColor = TeamColors.colors[team?.teamAbbrev?.default] ?: Color.White
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(10.dp),
-        border = BorderStroke(1.dp, Color.Gray),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(2.dp, teamColor),
+        colors = CardDefaults.cardColors(
+            containerColor = teamColor.copy(alpha = 0.03f)
+        ),
         onClick = {
             navController.navigate("teamDetail/${team?.teamAbbrev?.default}")
         }
@@ -102,7 +106,7 @@ fun TeamCard(
                 modifier = Modifier
                     .size(65.dp)
                     .clip(CircleShape)
-                    .background(Color.Gray.copy(alpha = 0.1f))
+                    .background(Color.Gray.copy(alpha = 0.3f))
                     .align(Alignment.CenterVertically),
                 model = ImageRequest.Builder(
                     LocalContext.current
@@ -120,19 +124,31 @@ fun TeamCard(
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
+                    fontSize = 20.sp
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "L10 ")
-                    Text(text = "W: ${team?.l10Wins} ")
-                    Text(text = "L: ${team?.l10Losses} ")
-                    Text(text = "OTL: ${team?.l10OtLosses}")
+                    Text(
+                        text = "${team?.conferenceName}",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                    VerticalDivider(
+                        modifier= Modifier
+                            .height(20.dp)
+                            .padding(horizontal = 16.dp),
+                        thickness = 2.dp,
+                        color = Color.Black
+                    )
+                    Text(
+                        text = "${team?.divisionName}",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium
+                    )
                 }
             }
         }

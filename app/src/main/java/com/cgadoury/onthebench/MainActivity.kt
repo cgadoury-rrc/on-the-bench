@@ -56,7 +56,11 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val db = AppDatabase.getInstance(applicationContext)
                 val api = NhlApi.retrofitService
-                val teamRepository: TeamRepository = TeamRepositoryImpl(api, db.teamDao())
+                val teamRepository: TeamRepository = TeamRepositoryImpl(
+                    nhlApiService = api,
+                    teamDao = db.teamDao(),
+                    lastUpdatedDao = db.lastUpdatedDao()
+                )
                 val playerRepository: PlayerRepository = PlayerRepositoryImpl(api)
                 val gameRepository: GameRepository = GameRepositoryImpl(api)
                 val teamsViewModel by lazy {

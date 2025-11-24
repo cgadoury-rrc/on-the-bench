@@ -61,7 +61,7 @@ class GamesViewModel (
                 loadGameData()
                 val hasLiveGames = _gamesTodayResponse.value.any { it.gameState == "LIVE" }
 
-                val delayTime = if (hasLiveGames) 10_000L else 60_000L
+                val delayTime = if (hasLiveGames) 60000L else 900000L
                 delay(delayTime)
             }
         }

@@ -37,7 +37,9 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.cgadoury.onthebench.api.model.point.Point
 import com.cgadoury.onthebench.mvvm.PlayersViewModel
+import com.cgadoury.onthebench.ui.theme.TeamColors
 import com.cgadoury.onthebench.utility.loadSvgImage
+import kotlin.collections.get
 
 /**
  * Purpose - players screen - displays top 50 nhl players
@@ -80,13 +82,13 @@ fun PlayerCard(
     player: Point?,
     navController: NavController
 ) {
+    val teamColor = TeamColors.colors[player?.teamAbbrev] ?: Color.White
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(10.dp),
-        border = BorderStroke(1.dp, Color.Gray),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(2.dp, teamColor),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = teamColor.copy(alpha = 0.03f)
         ),
         onClick = {
             navController.navigate("playerDetail/${player?.id}")
@@ -101,7 +103,7 @@ fun PlayerCard(
                 modifier = Modifier
                     .size(65.dp)
                     .clip(CircleShape)
-                    .background(Color.Gray.copy(alpha = 0.1f))
+                    .background(Color.Gray.copy(alpha = 0.3f))
                     .align(Alignment.CenterVertically),
                 model = ImageRequest.Builder(
                     LocalContext.current
@@ -131,7 +133,8 @@ fun PlayerCard(
                 ) {
                     Text(
                         text = "#${player?.sweaterNumber}",
-                        fontSize = 18.sp
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium
                     )
                     VerticalDivider(
                         modifier= Modifier
@@ -161,7 +164,8 @@ fun PlayerCard(
                     )
                     Text(
                         text = "${player?.position}",
-                        fontSize = 18.sp
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium
                     )
                 }
             }
