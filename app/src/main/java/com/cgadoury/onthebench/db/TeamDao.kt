@@ -8,18 +8,40 @@ import androidx.room.Query
 import com.cgadoury.onthebench.api.model.standing.Standing
 import com.cgadoury.onthebench.api.model.standing.TeamAbbrev
 
+/**
+ * Purpose - team dao - the team data access object
+ */
 @Dao
 interface TeamDao {
 
+    /**
+     * Purpose - insert all teams - insert all teams into the database
+     * @param teams: A list of teams to insert
+     * @return Unit
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllTeams(teams: List<Standing>)
+    suspend fun insertAllTeams(teams: List<Standing>): Unit
 
+    /**
+     * Purpose - delete - delete a team from the database
+     * @param team: The team to delete
+     * @return Unit
+     */
     @Delete
-    suspend fun delete(team: Standing)
+    suspend fun delete(team: Standing): Unit
 
+    /**
+     * Purpose - get all teams - get all teams from the database
+     * @return List<Standing>: All teams
+     */
     @Query("SELECT * FROM teams")
-    fun getAllTeams() : List<Standing>
+    suspend fun getAllTeams() : List<Standing>
 
+    /**
+     * Purpose - get team by abbreviation - get a teams using it's team abbreviation
+     * @param abbrev: The abbreviation to search for
+     * @return Standing: The team matching the team abbreviation
+     */
     @Query("SELECT * FROM teams WHERE teamAbbrev = :abbrev")
     fun getTeamByAbbreviation(abbrev: String): Standing
 }
