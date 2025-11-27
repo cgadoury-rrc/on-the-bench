@@ -61,7 +61,10 @@ class MainActivity : ComponentActivity() {
                     teamDao = db.teamDao(),
                     lastUpdatedDao = db.lastUpdatedDao()
                 )
-                val playerRepository: PlayerRepository = PlayerRepositoryImpl(api)
+                val playerRepository: PlayerRepository = PlayerRepositoryImpl(
+                    nhlApiService = api,
+                    playerDao = db.playerDao()
+                )
                 val gameRepository: GameRepository = GameRepositoryImpl(api)
                 val teamsViewModel by lazy {
                     TeamsViewModel(teamRepository = teamRepository)

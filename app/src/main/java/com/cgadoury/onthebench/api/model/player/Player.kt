@@ -1,39 +1,50 @@
 package com.cgadoury.onthebench.api.model.player
 
 
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+@Entity(tableName = "players")
 @JsonClass(generateAdapter = true)
 data class Player(
+    var lastUpdated: Long = System.currentTimeMillis(),
+    @Ignore
     @Json(name = "awards")
     var awards: List<Award>?=null,
+    @Ignore
     @Json(name = "badges")
     var badges: List<Badge>?=null,
     @Json(name = "birthCity")
-    var birthCity: BirthCity?=null,
+    var birthCity: BirthCity=BirthCity(),
     @Json(name = "birthCountry")
     var birthCountry: String="",
     @Json(name = "birthDate")
     var birthDate: String="",
     @Json(name = "birthStateProvince")
-    var birthStateProvince: BirthStateProvince?=null,
+    var birthStateProvince: BirthStateProvince = BirthStateProvince(),
+    @Ignore
     @Json(name = "careerTotals")
     var careerTotals: CareerTotals?=null,
     @Json(name = "currentTeamAbbrev")
     var currentTeamAbbrev: String="",
     @Json(name = "currentTeamId")
     var currentTeamId: Int=0,
+    @Ignore
     @Json(name = "currentTeamRoster")
     var currentTeamRoster: List<CurrentTeamRoster> = emptyList(),
+    @Embedded(prefix = "draft_")
     @Json(name = "draftDetails")
     var draftDetails: DraftDetails = DraftDetails(),
     @Json(name = "featuredStats")
-    var featuredStats: FeaturedStats= FeaturedStats(),
+    var featuredStats: FeaturedStats = FeaturedStats(),
     @Json(name = "firstName")
-    var firstName: FirstNameX?=null,
+    var firstName: FirstNameX = FirstNameX(),
     @Json(name = "fullTeamName")
-    var fullTeamName: FullTeamName?=null,
+    var fullTeamName: FullTeamName = FullTeamName(),
     @Json(name = "headshot")
     var headshot: String="",
     @Json(name = "heightInCentimeters")
@@ -48,10 +59,12 @@ data class Player(
     var inTop100AllTime: Int=0,
     @Json(name = "isActive")
     var isActive: Boolean=true,
+    @Ignore
     @Json(name = "last5Games")
     var last5Games: List<Last5Game> = emptyList(),
     @Json(name = "lastName")
     var lastName: LastNameX?=null,
+    @PrimaryKey
     @Json(name = "playerId")
     var playerId: Int=0,
     @Json(name = "playerSlug")
@@ -62,6 +75,7 @@ data class Player(
     var seasonTotals: List<SeasonTotal> = emptyList(),
     @Json(name = "shootsCatches")
     var shootsCatches: String="",
+    @Ignore
     @Json(name = "shopLink")
     var shopLink: String="",
     @Json(name = "sweaterNumber")
@@ -70,6 +84,7 @@ data class Player(
     var teamCommonName: TeamCommonNameX?=null,
     @Json(name = "teamLogo")
     var teamLogo: String="",
+    @Ignore
     @Json(name = "teamPlaceNameWithPreposition")
     var teamPlaceNameWithPreposition: TeamPlaceNameWithPrepositionX?=null,
     @Json(name = "twitterLink")

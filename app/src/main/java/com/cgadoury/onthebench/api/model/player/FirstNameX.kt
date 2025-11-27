@@ -7,5 +7,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class FirstNameX(
     @Json(name = "default")
-    var default: String?
+    var default: String=""
 )
