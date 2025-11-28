@@ -1,15 +1,12 @@
 package com.cgadoury.onthebench.mvvm
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cgadoury.onthebench.api.model.game.Game
-import com.cgadoury.onthebench.api.model.game.GameData
 import com.cgadoury.onthebench.repository.GameRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -31,6 +28,7 @@ class GamesViewModel (
     val gamesYesterdayResponse: State<List<Game>> = _gamesYesterdayResponse
     private var _gamesTomorrowResponse = mutableStateOf<List<Game>>(emptyList())
     val gamesTomorrowResponse: State<List<Game>> = _gamesTomorrowResponse
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     val wildcard = Random().nextInt(1, 100)
 
     init {
