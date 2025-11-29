@@ -33,7 +33,7 @@ class TeamRepositoryImpl(
         val currentTime = System.currentTimeMillis()
         val isCacheExpired =
             lastUpdated?.id == null
-                    || currentTime - lastUpdated.lastUpdated > 86400000L
+                    || currentTime - lastUpdated.lastUpdated > 43200000L
 
         if (cachedTeams.isEmpty() || isCacheExpired) {
             teams = nhlApiService.getCurrentStandings().body()?.standings?.filterNotNull() ?: emptyList()
