@@ -5,6 +5,7 @@ import com.cgadoury.onthebench.api.NhlApiService
 import com.cgadoury.onthebench.api.model.player.Player
 import com.cgadoury.onthebench.api.model.point.Point
 import com.cgadoury.onthebench.db.PlayerDao
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObjects
 import kotlinx.coroutines.Dispatchers
@@ -123,5 +124,19 @@ class PlayerRepositoryImpl(
             .addOnFailureListener { e ->
                 Log.d("Firebase", "Error deleting player", e)
             }
+    }
+
+    /**
+     * Purpose - does player exist - checks the firestore db to see if a player exists
+     * @param playerId: The player id to search for
+     * @param collection: The reference to the firestore collection
+     * @return Boolean: True if the player exists in the collection; otherwise false
+     */
+    private suspend fun doesPlayerExist(
+        playerId: Int,
+        collection: CollectionReference
+    ): Boolean {
+        val querySnapshot = collection.whereEqualTo("playerId", playerId).get().await()
+        return !querySnapshot.isEmpty
     }
 }

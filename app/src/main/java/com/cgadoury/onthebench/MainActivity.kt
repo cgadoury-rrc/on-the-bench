@@ -63,7 +63,6 @@ class MainActivity : ComponentActivity() {
             OnTheBenchTheme {
                 val navController = rememberNavController()
                 val db = AppDatabase.getInstance(applicationContext)
-                val fsDb = Firebase.firestore
                 val api = NhlApi.retrofitService
                 val teamRepository: TeamRepository = TeamRepositoryImpl(
                     nhlApiService = api,
@@ -167,8 +166,7 @@ class MainActivity : ComponentActivity() {
                                     modifier = Modifier,
                                     player = player!!,
                                     playersViewModel = playersViewModel,
-                                    db = db,
-                                    fsDb = fsDb
+                                    navController = navController
                                 )
                             }
                         }

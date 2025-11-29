@@ -63,7 +63,7 @@ class PlayersViewModel(
      * @param player: The player to update
      * @return Unit
      */
-    fun updateIsFavouriteState(playerId: Int, db: AppDatabase) {
+    fun updateIsFavouriteState(playerId: Int) {
         viewModelScope.launch {
             val player = playerRepository.getPlayerById(playerId = playerId)
 

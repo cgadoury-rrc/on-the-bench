@@ -1,8 +1,8 @@
 package com.cgadoury.onthebench.screens
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.cgadoury.onthebench.api.model.player.Player
@@ -73,8 +74,7 @@ fun PlayerDetailScreen(
     modifier: Modifier,
     player: Player,
     playersViewModel: PlayersViewModel,
-    db: AppDatabase,
-    fsDb: FirebaseFirestore
+    navController: NavController
 ) {
     val teamAbbrev = player.currentTeamAbbrev
     val teamColor = TeamColors.colors[teamAbbrev] ?: Color.White
@@ -91,7 +91,8 @@ fun PlayerDetailScreen(
             PlayerHeader(
                 modifier = modifier,
                 player = player,
-                teamColor = teamColor
+                teamColor = teamColor,
+                navController = navController
             )
         }
 
@@ -114,21 +115,12 @@ fun PlayerDetailScreen(
                 )
                 IconButton(
                     onClick = {
-                        playersViewModel.updateIsFavouriteState(player.playerId, db)
+                        playersViewModel.updateIsFavouriteState(player.playerId)
 
-                        var playerExists: Boolean? = null
-                        val collection: CollectionReference = fsDb.collection("players")
-
-                        playersViewModel.viewModelScope.launch(Dispatchers.IO) {
-                            playerExists = doesPlayerExist(
-                                playerId = player.playerId,
-                                collection = collection
-                            )
-                            if (!playerExists && !isIconChanged) {
-                                playersViewModel.saveFavouritePlayer(player = player)
-                            } else if (playerExists && isIconChanged) {
-                                playersViewModel.deleteFavouritePlayer(player.playerId.toString())
-                            }
+                        if (!isIconChanged) {
+                            playersViewModel.saveFavouritePlayer(player = player)
+                        } else {
+                            playersViewModel.deleteFavouritePlayer(player.playerId.toString())
                         }
                     }
                 ) {
@@ -180,7 +172,8 @@ fun PlayerDetailScreen(
 fun PlayerHeader(
     modifier: Modifier,
     player: Player,
-    teamColor: Color
+    teamColor: Color,
+    navController: NavController
 ) {
     val backgroundColors = listOf(
         teamColor,
@@ -227,7 +220,8 @@ fun PlayerHeader(
             ) {
                 AsyncImage(
                     modifier = Modifier
-                        .size(44.dp),
+                        .size(44.dp)
+                        .clickable { navController.navigate("teamDetail/${player.currentTeamAbbrev}") },
                     model = ImageRequest.Builder(
                         LocalContext.current
                     ).data(player.teamLogo)
@@ -455,18 +449,4 @@ fun PlayerInfoCard(
                     "Round ${player.draftDetails.round}, " +
                     "Pick ${player.draftDetails.pickInRound}")
     }
-}
-
-/**
- * Purpose - does player exist - checks the firestore db to see if a player exists
- * @param playerId: The player id to search for
- * @param collection: The reference to the firestore collection
- * @return Boolean: True if the player exists in the collection; otherwise false
- */
-suspend fun doesPlayerExist(
-    playerId: Int,
-    collection: CollectionReference
-): Boolean {
-    val querySnapshot = collection.whereEqualTo("playerId", playerId).get().await()
-    return !querySnapshot.isEmpty
 }
