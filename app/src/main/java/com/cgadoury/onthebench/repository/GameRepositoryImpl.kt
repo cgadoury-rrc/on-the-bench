@@ -38,7 +38,9 @@ class GameRepositoryImpl(
      * @return List<Game>
      */
     suspend fun getGamesToday(): List<Game> {
-        return nhlApiService.getGamesToday().body()?.games ?: emptyList()
+        return nhlApiService.getGamesByDate(
+            today.format(dateFormat)
+        ).body()?.games ?: emptyList()
     }
 
     /**

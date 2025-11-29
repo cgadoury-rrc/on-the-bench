@@ -94,5 +94,8 @@ data class Player(
     @Json(name = "weightInKilograms")
     var weightInKilograms: Int=0,
     @Json(name = "weightInPounds")
-    var weightInPounds: Int=0
+    var weightInPounds: Int=0,
+
+    var isFavourite: Boolean = false
+
 )

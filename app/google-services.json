@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "582744631166",
+    "project_id": "onthebench-841d7",
+    "storage_bucket": "onthebench-841d7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:582744631166:android:515dbad8ac4c9cb82c752f",
+        "android_client_info": {
+          "package_name": "com.cgadoury.onthebench"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKyyVMC80KRSx2xmTKFO_iOOSoHZaNvzk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

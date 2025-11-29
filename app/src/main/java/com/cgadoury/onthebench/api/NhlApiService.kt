@@ -22,13 +22,6 @@ interface NhlApiService {
     suspend fun getCurrentStandings(): Response<StandingData>
 
     /**
-     * Purpose - get games today - gets today's nhl games from the nhl api
-     * @return Response<GameData>: game data for the current day
-     */
-    @GET("v1/score/now")
-    suspend fun getGamesToday(): Response<GameData>
-
-    /**
      * Purpose - get games by date - gets games for a specific date
      * @param date: The date to retrieve game data for
      * @return Response<GameData>: game data for a specific data

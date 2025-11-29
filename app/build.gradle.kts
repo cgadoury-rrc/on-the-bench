@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.devtoolsKsp)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -63,8 +64,9 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.common)
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation(libs.kotlinx.datetime)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.firebase.firestore)
     ksp(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

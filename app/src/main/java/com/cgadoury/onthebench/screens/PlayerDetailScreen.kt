@@ -1,5 +1,6 @@
 package com.cgadoury.onthebench.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -14,10 +15,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,17 +41,24 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.cgadoury.onthebench.api.model.player.Player
 import com.cgadoury.onthebench.api.model.stat.StatData
+import com.cgadoury.onthebench.db.AppDatabase
+import com.cgadoury.onthebench.mvvm.PlayersViewModel
 import com.cgadoury.onthebench.ui.components.HorizontalInfoItem
 import com.cgadoury.onthebench.ui.components.StatItem
 import com.cgadoury.onthebench.ui.components.StatCardRow
 import com.cgadoury.onthebench.ui.theme.TeamColors
 import com.cgadoury.onthebench.utility.loadSvgImage
-import kotlin.math.max
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 /**
  * Purpose - player detail screen - show details for a specific player
@@ -51,17 +69,16 @@ import kotlin.math.max
 @Composable
 fun PlayerDetailScreen(
     modifier: Modifier,
-    player: Player
+    player: Player,
+    playersViewModel: PlayersViewModel,
+    db: AppDatabase,
+    fsDb: FirebaseFirestore
 ) {
     val teamAbbrev = player.currentTeamAbbrev
     val teamColor = TeamColors.colors[teamAbbrev] ?: Color.White
-    val backgroundColors = listOf(
-        teamColor,
-        teamColor.copy(alpha = 0.8f),
-        teamColor.copy(alpha = 0.5f),
-        teamColor.copy(alpha = 0.2f),
-        MaterialTheme.colorScheme.surface
-    )
+    val iconState by playersViewModel.isFavouriteIconState.collectAsState()
+    val isIconChanged = iconState[player.playerId] ?: player.isFavourite
+    var lastInsertedDocument: DocumentReference? by remember {mutableStateOf <DocumentReference?> (null)}
 
     LazyColumn(
         modifier = modifier.fillMaxSize()
@@ -73,8 +90,7 @@ fun PlayerDetailScreen(
             PlayerHeader(
                 modifier = modifier,
                 player = player,
-                teamColor = teamColor,
-                backgroundColors = backgroundColors
+                teamColor = teamColor
             )
         }
 
@@ -83,12 +99,100 @@ fun PlayerDetailScreen(
         }
 
         item {
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                text = "Player Stats",
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.headlineMedium
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Player Stats",
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.headlineMedium
+                )
+                IconButton(
+                    onClick = {
+                        playersViewModel.updateIsFavouriteState(player.playerId, db)
+
+                        var playerExists: Boolean? = null
+
+                        val collection: CollectionReference = fsDb.collection("players")
+                        val map = hashMapOf(
+                            "last_updated" to "${player.lastUpdated}",
+                            "awards" to "${player.awards}",
+                            "birth_city" to "${player.birthCity}",
+                            "birth_country" to player.birthCountry,
+                            "birth_state_province" to "${player.birthStateProvince}",
+                            "current_team_abbrev" to player.currentTeamAbbrev,
+                            "draft_details" to "${player.draftDetails}",
+                            "featured_stats" to "${player.featuredStats}",
+                            "first_name" to "${player.firstName}",
+                            "full_team_name" to "${player.fullTeamName}",
+                            "headshot" to player.headshot,
+                            "height_in_centimeters" to "${player.heightInCentimeters}",
+                            "height_in_inches" to "${player.heightInInches}",
+                            "hero_image" to player.heroImage,
+                            "in_hall_of_fame" to "${player.inHHOF}",
+                            "top_100_all_time" to "${player.inTop100AllTime}",
+                            "is_active" to "${player.isActive}",
+                            "last_name" to "${player.lastName}",
+                            "player_id" to "${player.playerId}",
+                            "player_slug" to player.playerSlug,
+                            "position" to player.position,
+                            "season_totals" to "${player.seasonTotals}",
+                            "shoots_catches" to player.shootsCatches,
+                            "sweater_number" to "${player.sweaterNumber}",
+                            "team_common_name" to "${player.teamCommonName}",
+                            "team_logo" to player.teamLogo,
+                            "twitter_link" to player.twitterLink,
+                            "watch_link" to player.watchLink,
+                            "weight_in_kg" to "${player.weightInKilograms}",
+                            "weight_in_lb" to "${player.weightInPounds}"
+                        )
+                        playersViewModel.viewModelScope.launch(Dispatchers.IO) {
+                            playerExists = doesPlayerExist(
+                                playerId = player.playerId.toString(),
+                                collection = collection
+                            )
+
+                            if (!playerExists && !isIconChanged) {
+                                fsDb.collection("players").add(map)
+                                    .addOnSuccessListener { documentReference ->
+                                        lastInsertedDocument = documentReference
+                                        Log.d(
+                                            "FS",
+                                            "DocumentSnapShot add with ID: ${documentReference.id}"
+                                        )
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.w("FS", "Error adding document", e)
+                                    }
+                            } else if (playerExists && isIconChanged) {
+                                lastInsertedDocument?.delete()
+                                    ?.addOnSuccessListener {
+                                        Log.i(
+                                            "Removal",
+                                            "${player.firstName} ${player.lastName} was removed from firestore"
+                                        )
+                                    }
+                                    ?.addOnFailureListener {
+                                        Log.i(
+                                            "Removal",
+                                            "There was a problem removing ${player.firstName} ${player.lastName} from firestore"
+                                        )
+                                    }
+                            }
+                        }
+                    }
+                ) {
+                    Icon(
+                        imageVector = if (isIconChanged) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = "Is Favourite",
+                        tint=Color.Red
+                    )
+                }
+            }
         }
 
         item {
@@ -119,13 +223,26 @@ fun PlayerDetailScreen(
     }
 }
 
+/**
+ * Purpose - player header - displays player headshot, team, and stat info
+ * @param modifier: The application modifier
+ * @param player: The player to display
+ * @param teamColor: The player's team color
+ * @return Unit
+ */
 @Composable
 fun PlayerHeader(
     modifier: Modifier,
     player: Player,
-    teamColor: Color,
-    backgroundColors: List<Color>
+    teamColor: Color
 ) {
+    val backgroundColors = listOf(
+        teamColor,
+        teamColor.copy(alpha = 0.8f),
+        teamColor.copy(alpha = 0.5f),
+        teamColor.copy(alpha = 0.2f),
+        MaterialTheme.colorScheme.surface
+    )
     Box(
         modifier
             .background(
@@ -392,4 +509,18 @@ fun PlayerInfoCard(
                     "Round ${player.draftDetails.round}, " +
                     "Pick ${player.draftDetails.pickInRound}")
     }
+}
+
+/**
+ * Purpose - does player exist - checks the firestore db to see if a player exists
+ * @param playerId: The player id to search for
+ * @param collection: The reference to the firestore collection
+ * @return Boolean: True if the player exists in the collection; otherwise false
+ */
+suspend fun doesPlayerExist(
+    playerId: String,
+    collection: CollectionReference
+): Boolean {
+    val querySnapshot = collection.whereEqualTo("player_id", playerId).get().await()
+    return !querySnapshot.isEmpty
 }

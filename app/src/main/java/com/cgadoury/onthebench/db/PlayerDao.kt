@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.cgadoury.onthebench.api.model.player.Player
 
 /**
@@ -37,4 +38,12 @@ interface PlayerDao {
      */
     @Query("SELECT * FROM players WHERE playerId = :playerId")
     suspend fun getPlayerById(playerId: Int): Player?
+
+    /**
+     * Purpose - update is favourite state - updates the is favourite field of player
+     * @param player: The player to update
+     * @return Unit
+     */
+    @Update
+    fun updateIsFavouriteState(player: Player): Unit
 }

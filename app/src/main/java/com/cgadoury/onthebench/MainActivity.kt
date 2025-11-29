@@ -1,10 +1,12 @@
 package com.cgadoury.onthebench
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -43,6 +45,8 @@ import com.cgadoury.onthebench.mvvm.PlayersViewModel
 import com.cgadoury.onthebench.repository.GameRepository
 import com.cgadoury.onthebench.repository.GameRepositoryImpl
 import com.cgadoury.onthebench.screens.PlayerDetailScreen
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 /**
@@ -50,6 +54,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
  */
 class MainActivity : ComponentActivity() {
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +63,7 @@ class MainActivity : ComponentActivity() {
             OnTheBenchTheme {
                 val navController = rememberNavController()
                 val db = AppDatabase.getInstance(applicationContext)
+                val fsDb = Firebase.firestore
                 val api = NhlApi.retrofitService
                 val teamRepository: TeamRepository = TeamRepositoryImpl(
                     nhlApiService = api,
@@ -159,7 +165,10 @@ class MainActivity : ComponentActivity() {
                             player?.let {
                                 PlayerDetailScreen(
                                     modifier = Modifier,
-                                    player = player!!
+                                    player = player!!,
+                                    playersViewModel = playersViewModel,
+                                    db = db,
+                                    fsDb = fsDb
                                 )
                             }
                         }
