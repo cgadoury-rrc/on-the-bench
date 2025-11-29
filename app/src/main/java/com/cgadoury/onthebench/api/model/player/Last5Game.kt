@@ -7,35 +7,35 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Last5Game(
     @Json(name = "assists")
-    var assists: Int?,
+    var assists: Int=0,
     @Json(name = "gameDate")
-    var gameDate: String?,
+    var gameDate: String="",
     @Json(name = "gameId")
-    var gameId: Int?,
+    var gameId: Int=0,
     @Json(name = "gameTypeId")
-    var gameTypeId: Int?,
+    var gameTypeId: Int=0,
     @Json(name = "goals")
-    var goals: Int?,
+    var goals: Int=0,
     @Json(name = "homeRoadFlag")
-    var homeRoadFlag: String?,
+    var homeRoadFlag: String="",
     @Json(name = "opponentAbbrev")
-    var opponentAbbrev: String?,
+    var opponentAbbrev: String="",
     @Json(name = "pim")
-    var pim: Int?,
+    var pim: Int=0,
     @Json(name = "plusMinus")
-    var plusMinus: Int?,
+    var plusMinus: Int=0,
     @Json(name = "points")
-    var points: Int?,
+    var points: Int=0,
     @Json(name = "powerPlayGoals")
-    var powerPlayGoals: Int?,
+    var powerPlayGoals: Int=0,
     @Json(name = "shifts")
-    var shifts: Int?,
+    var shifts: Int=0,
     @Json(name = "shorthandedGoals")
-    var shorthandedGoals: Int?,
+    var shorthandedGoals: Int=0,
     @Json(name = "shots")
-    var shots: Int?,
+    var shots: Int=0,
     @Json(name = "teamAbbrev")
-    var teamAbbrev: String?,
+    var teamAbbrev: String="",
     @Json(name = "toi")
-    var toi: String?
+    var toi: String=""
 )

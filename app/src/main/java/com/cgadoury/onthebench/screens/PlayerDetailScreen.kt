@@ -56,6 +56,8 @@ import com.cgadoury.onthebench.utility.loadSvgImage
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -78,7 +80,6 @@ fun PlayerDetailScreen(
     val teamColor = TeamColors.colors[teamAbbrev] ?: Color.White
     val iconState by playersViewModel.isFavouriteIconState.collectAsState()
     val isIconChanged = iconState[player.playerId] ?: player.isFavourite
-    var lastInsertedDocument: DocumentReference? by remember {mutableStateOf <DocumentReference?> (null)}
 
     LazyColumn(
         modifier = modifier.fillMaxSize()
@@ -116,72 +117,17 @@ fun PlayerDetailScreen(
                         playersViewModel.updateIsFavouriteState(player.playerId, db)
 
                         var playerExists: Boolean? = null
-
                         val collection: CollectionReference = fsDb.collection("players")
-                        val map = hashMapOf(
-                            "last_updated" to "${player.lastUpdated}",
-                            "awards" to "${player.awards}",
-                            "birth_city" to "${player.birthCity}",
-                            "birth_country" to player.birthCountry,
-                            "birth_state_province" to "${player.birthStateProvince}",
-                            "current_team_abbrev" to player.currentTeamAbbrev,
-                            "draft_details" to "${player.draftDetails}",
-                            "featured_stats" to "${player.featuredStats}",
-                            "first_name" to "${player.firstName}",
-                            "full_team_name" to "${player.fullTeamName}",
-                            "headshot" to player.headshot,
-                            "height_in_centimeters" to "${player.heightInCentimeters}",
-                            "height_in_inches" to "${player.heightInInches}",
-                            "hero_image" to player.heroImage,
-                            "in_hall_of_fame" to "${player.inHHOF}",
-                            "top_100_all_time" to "${player.inTop100AllTime}",
-                            "is_active" to "${player.isActive}",
-                            "last_name" to "${player.lastName}",
-                            "player_id" to "${player.playerId}",
-                            "player_slug" to player.playerSlug,
-                            "position" to player.position,
-                            "season_totals" to "${player.seasonTotals}",
-                            "shoots_catches" to player.shootsCatches,
-                            "sweater_number" to "${player.sweaterNumber}",
-                            "team_common_name" to "${player.teamCommonName}",
-                            "team_logo" to player.teamLogo,
-                            "twitter_link" to player.twitterLink,
-                            "watch_link" to player.watchLink,
-                            "weight_in_kg" to "${player.weightInKilograms}",
-                            "weight_in_lb" to "${player.weightInPounds}"
-                        )
+
                         playersViewModel.viewModelScope.launch(Dispatchers.IO) {
                             playerExists = doesPlayerExist(
-                                playerId = player.playerId.toString(),
+                                playerId = player.playerId,
                                 collection = collection
                             )
-
                             if (!playerExists && !isIconChanged) {
-                                fsDb.collection("players").add(map)
-                                    .addOnSuccessListener { documentReference ->
-                                        lastInsertedDocument = documentReference
-                                        Log.d(
-                                            "FS",
-                                            "DocumentSnapShot add with ID: ${documentReference.id}"
-                                        )
-                                    }
-                                    .addOnFailureListener { e ->
-                                        Log.w("FS", "Error adding document", e)
-                                    }
+                                playersViewModel.saveFavouritePlayer(player = player)
                             } else if (playerExists && isIconChanged) {
-                                lastInsertedDocument?.delete()
-                                    ?.addOnSuccessListener {
-                                        Log.i(
-                                            "Removal",
-                                            "${player.firstName} ${player.lastName} was removed from firestore"
-                                        )
-                                    }
-                                    ?.addOnFailureListener {
-                                        Log.i(
-                                            "Removal",
-                                            "There was a problem removing ${player.firstName} ${player.lastName} from firestore"
-                                        )
-                                    }
+                                playersViewModel.deleteFavouritePlayer(player.playerId.toString())
                             }
                         }
                     }
@@ -518,9 +464,9 @@ fun PlayerInfoCard(
  * @return Boolean: True if the player exists in the collection; otherwise false
  */
 suspend fun doesPlayerExist(
-    playerId: String,
+    playerId: Int,
     collection: CollectionReference
 ): Boolean {
-    val querySnapshot = collection.whereEqualTo("player_id", playerId).get().await()
+    val querySnapshot = collection.whereEqualTo("playerId", playerId).get().await()
     return !querySnapshot.isEmpty
 }

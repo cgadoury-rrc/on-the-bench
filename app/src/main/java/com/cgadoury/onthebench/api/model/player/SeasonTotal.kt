@@ -51,5 +51,5 @@ data class SeasonTotal(
     @Json(name = "teamName")
     var teamName: TeamName=TeamName(),
     @Json(name = "teamPlaceNameWithPreposition")
-    var teamPlaceNameWithPreposition: TeamPlaceNameWithPrepositionX?
+    var teamPlaceNameWithPreposition: TeamPlaceNameWithPrepositionX?=null
 )

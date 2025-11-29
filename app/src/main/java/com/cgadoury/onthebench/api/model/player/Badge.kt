@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Badge(
     @Json(name = "logoUrl")
-    var logoUrl: LogoUrl?,
+    var logoUrl: LogoUrl?=null,
     @Json(name = "title")
-    var title: Title?
+    var title: Title?=null
 )

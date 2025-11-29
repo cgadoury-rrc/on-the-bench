@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class CareerTotals(
     @Json(name = "playoffs")
-    var playoffs: Playoffs?,
+    var playoffs: Playoffs?=null,
     @Json(name = "regularSeason")
-    var regularSeason: RegularSeason?
+    var regularSeason: RegularSeason?=null
 )

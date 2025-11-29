@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Award(
     @Json(name = "seasons")
-    var seasons: List<Season?>?,
+    var seasons: List<Season?>?=null,
     @Json(name = "trophy")
-    var trophy: Trophy?
+    var trophy: Trophy?=null
 )

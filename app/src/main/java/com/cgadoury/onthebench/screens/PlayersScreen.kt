@@ -2,9 +2,11 @@ package com.cgadoury.onthebench.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
+import com.cgadoury.onthebench.api.model.player.Player
 import com.cgadoury.onthebench.api.model.point.Point
 import com.cgadoury.onthebench.mvvm.PlayersViewModel
 import com.cgadoury.onthebench.ui.theme.TeamColors
@@ -54,15 +57,50 @@ fun PlayersScreen(
     playersViewModel: PlayersViewModel,
     navController: NavController
 ) {
+    playersViewModel.getFavouritePlayers()
+
+    val pointsLeaders by playersViewModel.topPlayersResponse
+    val favouritePlayers by playersViewModel.favouritePlayersResponse
+    val hasFavourites = !favouritePlayers.isEmpty()
+
     Box(
         modifier = modifier.fillMaxSize()
     )
-    val pointsLeaders by playersViewModel.topPlayersResponse
 
     LazyColumn {
+        if (hasFavourites) {
+            item {
+                Text(
+                    modifier = Modifier
+                        .padding(8.dp),
+                    text = "Favourite Players",
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.headlineMedium
+                )
+            }
+
+            item {
+                FavouriteRow(
+                    modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    favouritePlayers = favouritePlayers,
+                    navController = navController
+                )
+            }
+        }
+
+        item {
+            Text(
+                modifier = Modifier
+                    .padding(8.dp),
+                text = "Points Leaders",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineMedium
+            )
+        }
+
         items(pointsLeaders) { player ->
             PlayerCard(
-                modifier = modifier.padding(5.dp),
+                modifier = modifier.padding(6.dp),
                 player = player,
                 navController = navController
             )
@@ -172,3 +210,54 @@ fun PlayerCard(
         }
     }
 }
+
+/**
+ * Purpose - favourite row - dynamically displays favourite players
+ * @param modifier: The application modifier
+ * @param favouritePlayers: The list of players to display
+ * @param navController: The application navigation controller
+ * @return Unit
+ */
+@Composable
+fun FavouriteRow(
+    modifier: Modifier,
+    favouritePlayers: List<Player>,
+    navController: NavController
+) {
+    FlowRow(
+        modifier = modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+        itemVerticalAlignment = Alignment.CenterVertically,
+        maxItemsInEachRow = 3
+    ) {
+        favouritePlayers.forEach { player ->
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                AsyncImage(
+                    modifier = Modifier
+                        .size(65.dp)
+                        .clip(CircleShape)
+                        .background(Color.Gray.copy(alpha = 0.3f))
+                        .clickable { navController.navigate("playerDetail/${player.playerId}") },
+                    model = ImageRequest.Builder(
+                        LocalContext.current
+                    ).data(player.headshot)
+                        .build(),
+                    contentDescription = null,
+                    imageLoader = loadSvgImage(
+                        context = LocalContext.current
+                    )
+                )
+                Text(
+                    text = "${player.firstName.default[0]}. ${player.lastName?.default}",
+                    fontSize = 12.sp
+                )
+            }
+        }
+    }
+}
+

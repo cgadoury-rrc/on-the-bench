@@ -5,8 +5,12 @@ import com.cgadoury.onthebench.api.NhlApiService
 import com.cgadoury.onthebench.api.model.player.Player
 import com.cgadoury.onthebench.api.model.point.Point
 import com.cgadoury.onthebench.db.PlayerDao
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObjects
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import kotlin.collections.emptyList
 
 /**
  * Purpose - player repository impl - the player repository implementation
@@ -16,16 +20,16 @@ class PlayerRepositoryImpl(
     private val nhlApiService: NhlApiService,
     private val playerDao: PlayerDao
 ): PlayerRepository {
-    private var topPlayers: List<Point> = emptyList()
+
+    private val firestore = FirebaseFirestore.getInstance()
 
     /**
      * Purpose - get top players - get top nhl player in terms of points
      * @return List<Point>: A list of the top nhl players in terms of points
      */
     override suspend fun getTopPlayers(): List<Point> {
-        topPlayers = nhlApiService.getTop50SkaterPoints().body()?.points?.filterNotNull() ?: emptyList()
-
-        return topPlayers
+        return nhlApiService
+            .getTop50SkaterPoints().body()?.points?.filterNotNull() ?: emptyList()
     }
 
     /**
@@ -69,5 +73,55 @@ class PlayerRepositoryImpl(
         withContext(Dispatchers.IO) {
             playerDao.updateIsFavouriteState(player)
         }
+    }
+
+    /**
+     * Purpose - get favourite players - gets favourite players from the firestore db
+     * @return List<Player>: A list of favourite nhl players
+     */
+    override suspend fun getFavouritePlayers(): List<Player> {
+        return try {
+            firestore.collection("players")
+                .get()
+                .await()
+                .toObjects<Player>()
+        } catch (e: Exception) {
+            Log.e("Firebase", "Error getting favourite players", e)
+            emptyList()
+        }
+    }
+
+    /**
+     * Purpose - save a favourite player to the firestore db
+     * @param player: The player to save
+     * @return Unit
+     */
+    override suspend fun saveFavouritePlayer(player: Player): Unit {
+        firestore.collection("players")
+            .document(player.playerId.toString())
+            .set(player)
+            .addOnSuccessListener {
+                Log.d("Firebase", "Player saved")
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firebase", "Error saving player", e)
+            }
+    }
+
+    /**
+     * Purpose - delete favourite player - delete a favourite player from the database
+     * @param playerId: The player id used to search for and delete a player
+     * @return Unit
+     */
+    override suspend fun deleteFavouritePlayer(playerId: String): Unit {
+        firestore.collection("players")
+            .document(playerId)
+            .delete()
+            .addOnSuccessListener {
+                Log.d("Firebase", "Player deleted successfully")
+            }
+            .addOnFailureListener { e ->
+                Log.d("Firebase", "Error deleting player", e)
+            }
     }
 }
