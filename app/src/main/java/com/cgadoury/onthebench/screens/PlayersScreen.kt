@@ -2,6 +2,7 @@ package com.cgadoury.onthebench.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
@@ -68,30 +70,32 @@ fun PlayersScreen(
     )
 
     LazyColumn {
-        if (hasFavourites) {
-            item {
-                Text(
-                    modifier = Modifier
-                        .padding(8.dp),
-                    text = "Favourite Players",
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.headlineMedium
-                )
-            }
+        item {
+            Text(
+                modifier = Modifier
+                    .padding(8.dp),
+                text = "Favourite Players",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineLarge
+            )
+        }
 
-            item {
-                FavouritePlayerRow(
-                    modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    favouritePlayers = favouritePlayers,
-                    navController = navController
-                )
-            }
+        item {
+            FavouritePlayerRow(
+                modifier = modifier.padding(horizontal = 8.dp, vertical = 12.dp),
+                favouritePlayers = favouritePlayers,
+                navController = navController
+            )
+        }
+
+        item {
+            HorizontalDivider(modifier = modifier.padding(horizontal = 12.dp, vertical = 24.dp))
         }
 
         item {
             Text(
                 modifier = Modifier
-                    .padding(8.dp),
+                    .padding(horizontal = 8.dp, vertical = 12.dp),
                 text = "Points Leaders",
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.headlineMedium
@@ -137,6 +141,7 @@ fun PlayerCard(
                 .fillMaxWidth()
                 .padding(12.dp)
         ) {
+
             AsyncImage(
                 modifier = Modifier
                     .size(65.dp)
@@ -152,10 +157,12 @@ fun PlayerCard(
                         context = LocalContext.current
                     )
             )
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
+
                 Text(
                     text = ("${player?.firstName?.default} ${player?.lastName?.default}"),
                     textAlign = TextAlign.Center,
@@ -163,43 +170,50 @@ fun PlayerCard(
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp
                 )
+
                 Spacer(modifier = Modifier.height(8.dp))
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
                     Text(
                         text = "#${player?.sweaterNumber}",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium
                     )
+
                     VerticalDivider(
                         modifier= Modifier
                             .height(20.dp)
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 20.dp),
                         thickness = 2.dp,
                         color = Color.Black
                     )
+
                     AsyncImage(
                         modifier = Modifier
-                            .size(35.dp),
+                            .size(40.dp),
                         model = ImageRequest.Builder(
                             LocalContext.current
                        ).data(player?.teamLogo)
                             .build(),
-                        contentDescription = "Team Logo",
+                        contentDescription = "Player Team Logo",
                         imageLoader = loadSvgImage(
                                 context = LocalContext.current
                             )
                     )
+
                     VerticalDivider(
                         modifier= Modifier
                             .height(20.dp)
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 20.dp),
                         thickness = 2.dp,
                         color = Color.Black
                     )
+
                     Text(
                         text = "${player?.position}",
                         fontSize = 18.sp,
@@ -233,28 +247,44 @@ fun FavouritePlayerRow(
         maxItemsInEachRow = 3
     ) {
         favouritePlayers.forEach { player ->
+            val playerLastName = player.lastName?.default.toString()
+            val teamColor = TeamColors.colors[player.currentTeamAbbrev]
+
             Column(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AsyncImage(
                     modifier = Modifier
-                        .size(65.dp)
+                        .size(100.dp)
                         .clip(CircleShape)
-                        .background(Color.Gray.copy(alpha = 0.3f))
-                        .clickable { navController.navigate("playerDetail/${player.playerId}") },
+                        .background(teamColor!!.copy(alpha = 0.5f))
+                        .border(
+                            BorderStroke(width = 2.dp, teamColor),
+                            shape = CircleShape
+                        )
+                        .clickable {
+                            navController.navigate("playerDetail/${player.playerId}")
+                                   },
                     model = ImageRequest.Builder(
                         LocalContext.current
                     ).data(player.headshot)
                         .build(),
-                    contentDescription = null,
+                    contentDescription = "$playerLastName Headshot",
                     imageLoader = loadSvgImage(
                         context = LocalContext.current
                     )
                 )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
                 Text(
-                    text = "${player.firstName.default[0]}. ${player.lastName?.default}",
-                    fontSize = 12.sp
+                    text = playerLastName,
+                    fontSize = 14.sp,
+                    letterSpacing = 2.sp,
+                    color = Color.Gray
                 )
             }
         }

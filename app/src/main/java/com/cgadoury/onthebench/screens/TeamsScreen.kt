@@ -2,6 +2,7 @@ package com.cgadoury.onthebench.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -67,30 +70,32 @@ fun TeamsScreen(
     )
 
     LazyColumn {
-        if (hasFavourites) {
-            item {
-                Text(
-                    modifier = Modifier
-                        .padding(8.dp),
-                    text = "Favourite Teams",
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.headlineMedium
-                )
-            }
+        item {
+            Text(
+                modifier = Modifier
+                    .padding(8.dp),
+                text = "Favourite Teams",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineLarge
+            )
+        }
 
-            item {
-                FavouriteTeamRow(
-                    modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    favouriteTeams = favouriteTeams,
-                    navController = navController
-                )
-            }
+        item {
+            FavouriteTeamRow(
+                modifier = modifier.padding(horizontal = 8.dp, vertical = 12.dp),
+                favouriteTeams = favouriteTeams,
+                navController = navController
+            )
+        }
+
+        item {
+            HorizontalDivider(modifier = modifier.padding(horizontal = 12.dp, vertical = 24.dp))
         }
 
         item {
             Text(
                 modifier = Modifier
-                    .padding(8.dp),
+                    .padding(horizontal = 8.dp, vertical = 12.dp),
                 text = "Standings",
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.headlineMedium
@@ -99,7 +104,7 @@ fun TeamsScreen(
 
         items(teams) { team ->
             TeamCard(
-                modifier = modifier.padding(5.dp),
+                modifier = modifier.padding(6.dp),
                 team = team,
                 navController = navController
             )
@@ -182,7 +187,7 @@ fun TeamCard(
                     VerticalDivider(
                         modifier= Modifier
                             .height(20.dp)
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 20.dp),
                         thickness = 2.dp,
                         color = Color.Black
                     )
@@ -213,16 +218,27 @@ fun FavouriteTeamRow(
         maxItemsInEachRow = 3
     ) {
         favouriteTeams.forEach { team ->
+            val teamColor = TeamColors.colors[team.teamAbbrev.default]
+
             Column(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+
                 AsyncImage(
                     modifier = Modifier
-                        .size(65.dp)
+                        .size(100.dp)
                         .clip(CircleShape)
-                        .background(Color.Gray.copy(alpha = 0.3f))
-                        .clickable { navController.navigate("teamDetail/${team.teamAbbrev.default}") },
+                        .background(teamColor!!.copy(alpha = 0.5f))
+                        .border(
+                            BorderStroke(width = 2.dp, teamColor),
+                            shape = CircleShape
+                        )
+                        .clickable {
+                            navController.navigate("teamDetail/${team.teamAbbrev.default}")
+                                   },
                     model = ImageRequest.Builder(
                         LocalContext.current
                     ).data(team.teamLogo)
@@ -233,13 +249,13 @@ fun FavouriteTeamRow(
                     )
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
                     text = team.teamName.default.split(" ").last(),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    letterSpacing = 2.sp
+                    fontSize = 14.sp,
+                    letterSpacing = 2.sp,
+                    color = Color.Gray
                 )
             }
         }
