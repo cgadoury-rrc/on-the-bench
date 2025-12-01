@@ -48,7 +48,7 @@ class Converters {
      */
     @TypeConverter
     fun toTeamName(value: String?): TeamName? =
-        value?.let { TeamName(default = it, fr = null) }
+        value?.let { TeamName(default = it, fr = "") }
 
     /**
      * Purpose - from team abbrev - converts a value from team abbrev to

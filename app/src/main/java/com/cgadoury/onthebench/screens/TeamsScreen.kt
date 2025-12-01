@@ -2,9 +2,11 @@ package com.cgadoury.onthebench.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -54,13 +56,47 @@ fun TeamsScreen(
     teamsViewModel: TeamsViewModel,
     navController: NavController
 ){
+    teamsViewModel.getFavouriteTeams()
+
+    val teams by teamsViewModel.standingsResponse
+    val favouriteTeams by teamsViewModel.favouriteTeamsResponse
+    val hasFavourites = !favouriteTeams.isEmpty()
+
     Box(
         modifier = modifier.fillMaxSize()
     )
 
-    val teams by teamsViewModel.standingsResponse
-
     LazyColumn {
+        if (hasFavourites) {
+            item {
+                Text(
+                    modifier = Modifier
+                        .padding(8.dp),
+                    text = "Favourite Teams",
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.headlineMedium
+                )
+            }
+
+            item {
+                FavouriteTeamRow(
+                    modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    favouriteTeams = favouriteTeams,
+                    navController = navController
+                )
+            }
+        }
+
+        item {
+            Text(
+                modifier = Modifier
+                    .padding(8.dp),
+                text = "Standings",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineMedium
+            )
+        }
+
         items(teams) { team ->
             TeamCard(
                 modifier = modifier.padding(5.dp),
@@ -115,10 +151,12 @@ fun TeamCard(
                 contentDescription = null,
                 imageLoader = loadSvgImage(context = LocalContext.current)
             )
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
+
                 Text(
                     text = team?.teamName?.default.orEmpty(),
                     textAlign = TextAlign.Center,
@@ -126,17 +164,21 @@ fun TeamCard(
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp
                 )
+
                 Spacer(modifier = Modifier.height(8.dp))
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
                     Text(
                         text = "${team?.conferenceName}",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium
                     )
+
                     VerticalDivider(
                         modifier= Modifier
                             .height(20.dp)
@@ -144,12 +186,61 @@ fun TeamCard(
                         thickness = 2.dp,
                         color = Color.Black
                     )
+
                     Text(
                         text = "${team?.divisionName}",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium
                     )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun FavouriteTeamRow(
+    modifier: Modifier,
+    favouriteTeams: List<Standing>,
+    navController: NavController
+) {
+    FlowRow(
+        modifier = modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+        itemVerticalAlignment = Alignment.CenterVertically,
+        maxItemsInEachRow = 3
+    ) {
+        favouriteTeams.forEach { team ->
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                AsyncImage(
+                    modifier = Modifier
+                        .size(65.dp)
+                        .clip(CircleShape)
+                        .background(Color.Gray.copy(alpha = 0.3f))
+                        .clickable { navController.navigate("teamDetail/${team.teamAbbrev.default}") },
+                    model = ImageRequest.Builder(
+                        LocalContext.current
+                    ).data(team.teamLogo)
+                        .build(),
+                    contentDescription = team.teamName.default + " Logo",
+                    imageLoader = loadSvgImage(
+                        context = LocalContext.current
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = team.teamName.default.split(" ").last(),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    letterSpacing = 2.sp
+                )
             }
         }
     }

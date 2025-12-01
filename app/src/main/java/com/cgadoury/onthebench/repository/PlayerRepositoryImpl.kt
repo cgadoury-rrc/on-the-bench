@@ -70,7 +70,7 @@ class PlayerRepositoryImpl(
      * @param player: The player to update
      * @return Unit
      */
-    override suspend fun updateIsFavouriteState(player: Player): Unit {
+    override suspend fun updateIsFavouritePlayerState(player: Player): Unit {
         withContext(Dispatchers.IO) {
             playerDao.updateIsFavouriteState(player)
         }

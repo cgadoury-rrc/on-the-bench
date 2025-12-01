@@ -26,9 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,27 +38,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.cgadoury.onthebench.api.model.player.Player
 import com.cgadoury.onthebench.api.model.stat.StatData
-import com.cgadoury.onthebench.db.AppDatabase
 import com.cgadoury.onthebench.mvvm.PlayersViewModel
 import com.cgadoury.onthebench.ui.components.HorizontalInfoItem
 import com.cgadoury.onthebench.ui.components.StatItem
 import com.cgadoury.onthebench.ui.components.StatCardRow
 import com.cgadoury.onthebench.ui.theme.TeamColors
 import com.cgadoury.onthebench.utility.loadSvgImage
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 /**
  * Purpose - player detail screen - show details for a specific player
@@ -115,7 +102,7 @@ fun PlayerDetailScreen(
                 )
                 IconButton(
                     onClick = {
-                        playersViewModel.updateIsFavouriteState(player.playerId)
+                        playersViewModel.updateIsFavouritePlayerState(player.playerId)
 
                         if (!isIconChanged) {
                             playersViewModel.saveFavouritePlayer(player = player)
@@ -433,20 +420,34 @@ fun PlayerInfoCard(
 ) {
     val playerBirthStateProvince: String? = player.birthStateProvince?.default
     Column(modifier = modifier) {
-        HorizontalInfoItem("Height", "${player.heightInCentimeters} cm")
-        HorizontalInfoItem("Weight", "${player.weightInPounds} lb")
         HorizontalInfoItem(
-            "Born",
-            "${player.birthCity?.default}, " +
+            label = "Height",
+            value = "${player.heightInCentimeters} cm"
+        )
+        HorizontalInfoItem(
+            label = "Weight",
+            value = "${player.weightInPounds} lb"
+        )
+        HorizontalInfoItem(
+            label = "Born",
+            value = "${player.birthCity?.default}, " +
                     "${playerBirthStateProvince ?: ""} " +
                     player.birthCountry
         )
-        HorizontalInfoItem("Shot", player.shootsCatches)
-        HorizontalInfoItem("Birthdate", player.birthDate)
-        HorizontalInfoItem("Draft",
-            "${player.draftDetails.year}, " +
+        HorizontalInfoItem(
+            label = "Shot",
+            value = player.shootsCatches
+        )
+        HorizontalInfoItem(
+            label = "Birthdate",
+            value = player.birthDate
+        )
+        HorizontalInfoItem(
+            label = "Draft",
+            value = "${player.draftDetails.year}, " +
                     "${player.draftDetails.teamAbbrev}, " +
                     "Round ${player.draftDetails.round}, " +
-                    "Pick ${player.draftDetails.pickInRound}")
+                    "Pick ${player.draftDetails.pickInRound}"
+        )
     }
 }

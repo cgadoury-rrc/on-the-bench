@@ -80,7 +80,7 @@ fun PlayersScreen(
             }
 
             item {
-                FavouriteRow(
+                FavouritePlayerRow(
                     modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     favouritePlayers = favouritePlayers,
                     navController = navController
@@ -219,7 +219,7 @@ fun PlayerCard(
  * @return Unit
  */
 @Composable
-fun FavouriteRow(
+fun FavouritePlayerRow(
     modifier: Modifier,
     favouritePlayers: List<Player>,
     navController: NavController

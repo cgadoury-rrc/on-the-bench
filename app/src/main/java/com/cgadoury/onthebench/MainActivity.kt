@@ -145,7 +145,7 @@ class MainActivity : ComponentActivity() {
                             val teamAbbrev = navBackStackEntry.arguments?.getString("teamAbbrev")
                             TeamDetailScreen(
                                 modifier = Modifier,
-                                team = teamsViewModel.getTeamByAbbreviation(teamAbbrev = teamAbbrev!!)!!,
+                                team = teamsViewModel.getTeamByAbbreviation(teamAbbrev = teamAbbrev!!),
                                 teamsViewModel = teamsViewModel,
                                 navController = navController
                             )

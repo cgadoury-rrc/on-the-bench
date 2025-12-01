@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class TeamName(
     @Json(name = "default")
-    var default: String?,
+    var default: String="",
     @Json(name = "fr")
-    var fr: String?
+    var fr: String=""
 )

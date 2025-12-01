@@ -15,7 +15,7 @@ import com.cgadoury.onthebench.api.model.standing.Standing
 @TypeConverters(Converters::class)
 @Database(
     entities = [Standing::class, LastUpdated::class, Player::class],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 abstract class AppDatabase: RoomDatabase() {

@@ -27,7 +27,7 @@ interface PlayerRepository {
      * @param player: The player to update
      * @return Unit
      */
-    suspend fun updateIsFavouriteState(player: Player): Unit
+    suspend fun updateIsFavouritePlayerState(player: Player): Unit
 
     /**
      * Purpose - get favourite players - gets favourite players from the firestore db

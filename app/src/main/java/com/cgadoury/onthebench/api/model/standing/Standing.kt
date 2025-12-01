@@ -152,14 +152,12 @@ data class Standing(
     var streakCode: String="",
     @Json(name = "streakCount")
     var streakCount: Int=0,
-
     @PrimaryKey
     @Json(name = "teamAbbrev")
-    var teamAbbrev: TeamAbbrev = TeamAbbrev(""),
-
+    var teamAbbrev: TeamAbbrev=TeamAbbrev(""),
     @Ignore
     @Json(name = "teamCommonName")
-    var teamCommonName: TeamCommonName = TeamCommonName("", ""),
+    var teamCommonName: TeamCommonName?=TeamCommonName("", ""),
     @Json(name = "teamLogo")
     var teamLogo: String="",
     @Json(name = "teamName")
@@ -173,5 +171,6 @@ data class Standing(
     @Json(name = "winPctg")
     var winPctg: Double=0.0,
     @Json(name = "wins")
-    var wins: Int=0
+    var wins: Int=0,
+    var isFavourite: Boolean = false
 )

@@ -26,4 +26,31 @@ interface TeamRepository {
      * @return RosterData?
      */
     suspend fun getCurrentTeamRoster(teamAbbrev: String): RosterData?
+
+    /**
+     * Purpose - update is favourite team state - updates the is favourite state of a team
+     * @param team: The team to update is favourite state
+     * @return Unit
+     */
+    suspend fun updateIsFavouriteTeamState(team: Standing): Unit
+
+    /**
+     * Purpose - get favourite teams - gets favourite teams from the firestore db
+     * @return Unit
+     */
+    suspend fun getFavouriteTeams(): List<Standing>
+
+    /**
+     * Purpose - save favourite team - save a favourite team to the firestore db
+     * @param team: The team to save
+     * @return Unit
+     */
+    suspend fun saveFavouriteTeam(team: Standing): Unit
+
+    /**
+     * Purpose - delete favourite team - delete a favourite team from the firestore db
+     * @param teamAbbrev: The team abbreviation used to search for and delete a team
+     * @return Unit
+     */
+    suspend fun deleteFavouriteTeam(teamAbbrev: String): Unit
 }

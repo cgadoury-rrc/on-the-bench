@@ -5,8 +5,8 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.cgadoury.onthebench.api.model.standing.Standing
-import com.cgadoury.onthebench.api.model.standing.TeamAbbrev
 
 /**
  * Purpose - team dao - the team data access object
@@ -44,4 +44,12 @@ interface TeamDao {
      */
     @Query("SELECT * FROM teams WHERE teamAbbrev = :abbrev")
     fun getTeamByAbbreviation(abbrev: String): Standing
+
+    /**
+     * Purpose - update is favourite team state - updates the is favourite state of a team
+     * @param team: The team to favourite
+     * @return Unit
+     */
+    @Update
+    fun updateIsFavouriteTeamState(team: Standing): Unit
 }

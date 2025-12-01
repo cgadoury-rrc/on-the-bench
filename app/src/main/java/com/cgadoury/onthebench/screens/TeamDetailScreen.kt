@@ -16,11 +16,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,13 +71,9 @@ fun TeamDetailScreen(
     }
     val teamRoster = teamsViewModel.teamRoster.value
     val teamColor = TeamColors.colors[teamAbbrev] ?: Color.White
-    val backgroundColors = listOf(
-        teamColor,
-        teamColor.copy(alpha = 0.8f),
-        teamColor.copy(alpha = 0.5f),
-        teamColor.copy(alpha = 0.2f),
-        MaterialTheme.colorScheme.surface
-    )
+    val iconState by teamsViewModel.isFavouriteIconState.collectAsState()
+    val isIconChanged = iconState[teamAbbrev] ?: team.isFavourite
+
     LazyColumn(
         modifier = modifier
             .fillMaxSize(),
@@ -78,20 +81,55 @@ fun TeamDetailScreen(
         item {
             TeamHeader(
                 modifier = modifier,
-                backgroundColors = backgroundColors,
                 teamColor = teamColor,
                 team = team
             )
         }
+
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Team Stats",
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.headlineMedium
+                )
+                IconButton(
+                    onClick = {
+                        teamsViewModel.updateIsFavouriteTeamState(teamAbbrev = teamAbbrev)
+
+                        if (!isIconChanged) {
+                            teamsViewModel.saveFavouriteTeam(team = team)
+                        } else {
+                            teamsViewModel.deleteFavouriteTeam(teamAbbrev = teamAbbrev)
+                        }
+                    }
+                ) {
+                    Icon(
+                        imageVector = if (isIconChanged) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = "Is favourite team",
+                        tint=Color.Red
+                    )
+                }
+            }
+        }
+
         item {
             HorizontalDivider(modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp))
         }
+
         item {
             TeamStatCard(
                 modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 team = team
             )
         }
+
         if (teamRoster != null) {
             item {
                 Text(
@@ -101,6 +139,7 @@ fun TeamDetailScreen(
                     style = MaterialTheme.typography.headlineMedium
                 )
             }
+
             item {
                 Text(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -109,6 +148,7 @@ fun TeamDetailScreen(
                     style = MaterialTheme.typography.headlineSmall
                 )
             }
+
             items(teamRoster.forwards) { forward ->
                 RosterPlayerRow(
                     modifier = modifier.padding(horizontal = 16.dp, vertical = 12.dp),
@@ -116,6 +156,7 @@ fun TeamDetailScreen(
                     navController = navController
                 )
             }
+
             item {
                 Text(
                     modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -124,6 +165,7 @@ fun TeamDetailScreen(
                     style = MaterialTheme.typography.headlineSmall
                 )
             }
+
             items(teamRoster.defensemen) {defenseman ->
                 RosterPlayerRow(
                     modifier = modifier.padding(horizontal = 16.dp, vertical = 12.dp),
@@ -131,6 +173,7 @@ fun TeamDetailScreen(
                     navController = navController
                 )
             }
+
             item {
                 Text(
                     modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -139,6 +182,7 @@ fun TeamDetailScreen(
                     style = MaterialTheme.typography.headlineSmall
                 )
             }
+
             items(teamRoster.goalies) {goalie ->
                 RosterPlayerRow(
                     modifier = modifier.padding(horizontal = 16.dp, vertical = 12.dp),
@@ -153,17 +197,23 @@ fun TeamDetailScreen(
 /**
  * Purpose - team header - display current team information
  * @param modifier: The application modifier
- * @param backgroundColors: Background colour to apply as a vertical gradient
  * @param teamColor: The designated team color
  * @param team: The team to display
  */
 @Composable
 fun TeamHeader(
     modifier: Modifier,
-    backgroundColors: List<Color>,
     teamColor: Color,
     team: Standing
 ) {
+    val backgroundColors = listOf(
+        teamColor,
+        teamColor.copy(alpha = 0.8f),
+        teamColor.copy(alpha = 0.5f),
+        teamColor.copy(alpha = 0.2f),
+        MaterialTheme.colorScheme.surface
+    )
+
     Box(
         modifier = modifier
             .background(
@@ -197,7 +247,9 @@ fun TeamHeader(
                 contentDescription = null,
                 imageLoader = loadSvgImage(context = LocalContext.current)
             )
+
             Spacer(modifier = Modifier.height(14.dp))
+
             Text(
                 text = team.teamName.default.orEmpty(),
                 style = MaterialTheme.typography.headlineLarge,
@@ -205,17 +257,34 @@ fun TeamHeader(
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
+
             Spacer(modifier = Modifier.height(8.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth()
                     .padding(vertical=8.dp, horizontal = 16.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                StatItem("GP", team.gamesPlayed)
-                StatItem("W", team.wins)
-                StatItem("L", team.losses)
-                StatItem("OTL", team.otLosses)
-                StatItem("Points", team.points)
+                StatItem(
+                    label = "GP",
+                    value = team.gamesPlayed
+                )
+                StatItem(
+                    label = "W",
+                    value = team.wins
+                )
+                StatItem(
+                    label = "L",
+                    value = team.losses
+                )
+                StatItem(
+                    label = "OTL",
+                    value = team.otLosses
+                )
+                StatItem(
+                    label = "Points",
+                    value = team.points
+                )
             }
         }
     }
@@ -235,12 +304,6 @@ fun TeamStatCard(
     Column(
         modifier = modifier
     ) {
-        Text(
-            modifier = Modifier.padding(bottom = 18.dp),
-            text = "Team Stats",
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineMedium
-        )
         val hasPlayedGames = team.gamesPlayed > 0
         val overallWinPctg = (team.winPctg * 100).toInt()
         val overallStatData = listOf<StatData>(
@@ -260,6 +323,7 @@ fun TeamStatCard(
                 isGood = team.streakCode.startsWith("W")
             )
         )
+
         StatCardRow(
             modifier = modifier,
             title = "Overall",
@@ -298,6 +362,7 @@ fun TeamStatCard(
                 isGood = homeGoalsAgainstPerGame < 2.5
             )
         )
+
         StatCardRow(
             modifier = modifier,
             title = "Home",
@@ -331,6 +396,7 @@ fun TeamStatCard(
                 isGood = awayGoalsAgainstPerGame < 2.5
             )
         )
+
         StatCardRow(
             modifier = modifier,
             title = "Away",
@@ -371,14 +437,18 @@ fun RosterPlayerRow(
             contentDescription = null,
             imageLoader = loadSvgImage(context = LocalContext.current)
         )
+
         Spacer(modifier = Modifier.width(12.dp))
+
         Column(modifier = Modifier.weight(1f)) {
             val fullName = rosterPlayer.firstName?.default.toString() +
                     " ${rosterPlayer.lastName?.default.toString()}"
+
             Text(
                 text = fullName,
                 fontWeight = FontWeight.SemiBold
             )
+
             Text(
                 text = "#${rosterPlayer.sweaterNumber} - ${rosterPlayer.positionCode}",
                 fontSize = 12.sp,
@@ -386,6 +456,7 @@ fun RosterPlayerRow(
             )
         }
     }
+
     HorizontalDivider(
         modifier = Modifier.padding(horizontal = 12.dp),
         color = Color.Gray.copy(alpha = 0.3f)

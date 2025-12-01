@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cgadoury.onthebench.api.model.player.Player
 import com.cgadoury.onthebench.api.model.point.Point
-import com.cgadoury.onthebench.db.AppDatabase
 import com.cgadoury.onthebench.repository.PlayerRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,10 +59,10 @@ class PlayersViewModel(
 
     /**
      * Purpose - update favourite state - updates the is favourite state of a player
-     * @param player: The player to update
+     * @param playerId: The player with the player id to update
      * @return Unit
      */
-    fun updateIsFavouriteState(playerId: Int) {
+    fun updateIsFavouritePlayerState(playerId: Int) {
         viewModelScope.launch {
             val player = playerRepository.getPlayerById(playerId = playerId)
 
@@ -71,7 +70,7 @@ class PlayersViewModel(
                 player.isFavourite = !player.isFavourite
 
                 launch (Dispatchers.IO) {
-                    playerRepository.updateIsFavouriteState(player = player)
+                    playerRepository.updateIsFavouritePlayerState(player = player)
 
                     val updatedMap = _isFavouriteState.value.toMutableMap()
                     updatedMap[playerId] = player.isFavourite
@@ -83,9 +82,9 @@ class PlayersViewModel(
 
     /**
      * Purpose - get favourite players - gets favourite players from the firestore db
-     * @return List<Player>: A list of favourite nhl players
+     * @return Unit
      */
-    fun getFavouritePlayers() {
+    fun getFavouritePlayers(): Unit {
         viewModelScope.launch {
             _favouritePlayersResponse.value = playerRepository.getFavouritePlayers()
         }
@@ -96,7 +95,7 @@ class PlayersViewModel(
      * @param player: The player to save
      * @return Unit
      */
-    fun saveFavouritePlayer(player: Player) {
+    fun saveFavouritePlayer(player: Player): Unit {
         viewModelScope.launch {
             playerRepository.saveFavouritePlayer(player = player)
         }
