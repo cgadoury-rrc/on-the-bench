@@ -87,6 +87,10 @@ fun TeamDetailScreen(
         }
 
         item {
+            HorizontalDivider(modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+        }
+
+        item {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -117,10 +121,6 @@ fun TeamDetailScreen(
                     )
                 }
             }
-        }
-
-        item {
-            HorizontalDivider(modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp))
         }
 
         item {
