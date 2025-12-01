@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.auth)
     ksp(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

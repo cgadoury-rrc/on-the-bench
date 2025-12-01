@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">OnTheBench</string>
+    <string name="title_activity_sign_in">SIgnInActivity</string>
 </resources>
