@@ -70,7 +70,7 @@ fun SignInScreen(
         )
         Button(
             onClick = {
-                performSignIn(
+                signInEmailPassword(
                     email,
                     password,
                     context,
@@ -83,6 +83,22 @@ fun SignInScreen(
         ){
             Text("Sign In")
         }
+
+        Button(
+            onClick = {
+                signInAnonymously(
+                    email,
+                    password,
+                    context,
+                    keyboardController
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Text(text = "Sign in as Guest")
+        }
     }
 }
 
@@ -94,7 +110,7 @@ fun SignInScreen(
  * @param keyboardController: The device keyboard controller
  * @return Unit
  */
-private fun performSignIn(
+private fun signInEmailPassword(
     email: String,
     password: String,
     context: Context,
@@ -103,6 +119,29 @@ private fun performSignIn(
     val auth = FirebaseAuth.getInstance()
 
     auth.signInWithEmailAndPassword(email, password)
+        .addOnCompleteListener { task->
+            if (task.isSuccessful){
+                Toast.makeText(context, "Sign In Successful", Toast.LENGTH_SHORT).show()
+                val intent = Intent(context, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.putExtra("userID", FirebaseAuth.getInstance().currentUser?.uid)
+                context.startActivity(intent)
+            }else{
+                Toast.makeText(context, "Sign In Failed", Toast.LENGTH_LONG).show()
+            }
+            keyboardController?.hide()
+        }
+}
+
+private fun signInAnonymously(
+    email: String,
+    password: String,
+    context: Context,
+    keyboardController: SoftwareKeyboardController?
+) {
+    val auth = FirebaseAuth.getInstance()
+
+    auth.signInAnonymously()
         .addOnCompleteListener { task->
             if (task.isSuccessful){
                 Toast.makeText(context, "Sign In Successful", Toast.LENGTH_SHORT).show()
