@@ -1,9 +1,7 @@
 package com.cgadoury.onthebench.screens
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,7 +19,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -67,16 +67,17 @@ fun GamesScreen(
     teamsViewModel: TeamsViewModel,
     navController: NavController
 ) {
-    Box(
-        modifier = modifier.fillMaxSize()
-    )
     val xFactor = gamesViewModel.wildcard
     val gamesToday by gamesViewModel.gamesTodayResponse
     val gamesYesterday by gamesViewModel.gamesYesterdayResponse
     val gamesTomorrow by gamesViewModel.gamesTomorrowResponse
 
-    var selectedTabIndex by remember { mutableStateOf(1) }
     val tabs = listOf("Yesterday", "Today", "Tomorrow")
+    var selectedTabIndex by remember { mutableStateOf(1) }
+
+    Box(
+        modifier = modifier.fillMaxSize()
+    )
 
     Column {
         TabRow(selectedTabIndex = selectedTabIndex) {
@@ -136,16 +137,19 @@ fun GameDayTab(
     teamsViewModel: TeamsViewModel,
     navController: NavController
 ): Unit {
-
     LazyColumn {
         items(gameDayData) { game ->
+            Spacer(modifier = Modifier.height(8.dp))
+
             GameCard(
-                modifier = modifier.padding(5.dp),
+                modifier = modifier.padding(6.dp),
                 game = game,
                 teamsViewModel = teamsViewModel,
                 xFactor = xFactor,
                 navController = navController
             )
+
+            HorizontalDivider(modifier = modifier.padding(horizontal = 12.dp, vertical = 24.dp))
         }
     }
 }
@@ -173,14 +177,14 @@ fun GameCard(
     val winPrediction = remember(game.id) {
         predictGameWinner(homeTeam = homeTeam, awayTeam = awayTeam, xFactor = xFactor)
     }
-    val homePercent = (if (winPrediction.first == homeTeam) winPrediction.second else winPrediction.third).toFloat()
-    val awayPercent = (if (winPrediction.first == awayTeam) winPrediction.second else winPrediction.third).toFloat()
+    val homePercent =
+        (if (winPrediction.first == homeTeam) winPrediction.second else winPrediction.third).toFloat()
+    val awayPercent =
+        (if (winPrediction.first == awayTeam) winPrediction.second else winPrediction.third).toFloat()
 
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(10.dp),
-        border = BorderStroke(1.dp, Color.Gray),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         GameInfoRow(game)
@@ -190,8 +194,8 @@ fun GameCard(
         Row(
            modifier = Modifier
                .fillMaxWidth()
-               .padding(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.Absolute.SpaceAround,
+               .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             TeamScore(
@@ -221,7 +225,7 @@ fun GameCard(
             awayTeamColor = TeamColors.colors[awayTeam.teamAbbrev.default] ?: Color.White
         )
 
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(16.dp))
     }
 }
 
@@ -242,19 +246,20 @@ fun TeamScore(
     isScoreOnLeft: Boolean
 ): Unit {
     if (isScoreOnLeft) {
-        Text(
-            text = score,
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold
-        )
+        Score(score = score)
     }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = abbrev, fontWeight = FontWeight.Bold)
+        Text(
+            text = abbrev,
+            fontWeight = FontWeight.SemiBold,
+            color = Color.Gray
+        )
         AsyncImage(
             modifier = Modifier
-                .size(75.dp),
+                .size(85.dp),
             model = ImageRequest.Builder(
                 LocalContext.current
             ).data(logo)
@@ -263,12 +268,9 @@ fun TeamScore(
             imageLoader = loadSvgImage(context = LocalContext.current)
         )
     }
+
     if (!isScoreOnLeft) {
-        Text(
-            text = score,
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold
-        )
+        Score(score = score)
     }
 }
 
@@ -287,12 +289,26 @@ fun GameInfoRow(game: Game): Unit {
             .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = getFormattedStartDateTimeString(utcString = startTime))
+        Text(
+            text = getFormattedStartDateTimeString(utcString = startTime),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Color.DarkGray
+        )
+
         game.gameState?.let {
-            Text(
-                text = if (game.gameState == "OFF") "FINAL" else it,
-                color = if (game.gameState == "LIVE") Color.Red else Color.DarkGray
-            )
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = Color.LightGray.copy(alpha = 0.4f)
+            ) {
+                Text(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    text = if (game.gameState == "OFF") "FINAL" else it,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = if (game.gameState == "LIVE") Color.Red else Color.DarkGray,
+                )
+            }
         }
     }
 }
@@ -303,16 +319,42 @@ fun GameInfoRow(game: Game): Unit {
  * @return Unit
  */
 @Composable
-fun GameScoreClock(game: Game) {
+fun GameScoreClock(
+    game: Game
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val isIntermission = game.clock?.inIntermission ?: false
-        if (game.period.toString() != "null") {
-            Text(text = (if (isIntermission) "INT " else "P: " + game.period.toString()))
-            Text(text = game.clock?.timeRemaining.toString())
+        val gamePeriod: Int? = game.period
+        val isIntermission: Boolean = game.clock?.inIntermission ?: false
+
+        if (gamePeriod != null) {
+            val period = when {
+                isIntermission -> "INT"
+                gamePeriod == 4 -> "OT"
+                gamePeriod == 5 -> "SO"
+                else -> "P: $gamePeriod"
+            }
+
+            Text(
+                text = period,
+                fontSize = 12.sp,
+                color = Color.Gray
+            )
+
+            Text(
+                text = game.clock?.timeRemaining.toString(),
+                fontSize = 12.sp,
+                color = Color.Gray
+            )
+
+        } else {
+            Text(
+                text="VS",
+                fontSize = 12.sp,
+                color = Color.Gray
+            )
         }
-        Text(text="VS")
     }
 }
 
@@ -337,23 +379,25 @@ fun PredictedWinPercentageBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 14.dp),
+            .padding(horizontal = 14.dp, vertical = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = "${awayPercent.toInt()}%",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold,
+            fontSize = 12.sp,
+            color = Color.Gray
         )
+
         Text(
             text = "Win-O-Meter",
-            fontSize = 14.sp,
-            fontWeight = FontWeight.SemiBold
+            fontSize = 12.sp,
+            color = Color.Gray
         )
+
         Text(
             text = "${homePercent.toInt()}%",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold,
+            fontSize = 12.sp,
+            color = Color.Gray
         )
     }
 
@@ -361,10 +405,11 @@ fun PredictedWinPercentageBar(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
-            .height(10.dp)
-            .clip(RoundedCornerShape(12.dp)),
+            .height(12.dp)
+            .clip(RoundedCornerShape(8.dp)),
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
+
         Box(
             modifier = modifier
                 .weight(maxOf(awayPercent, 10f))
@@ -373,6 +418,7 @@ fun PredictedWinPercentageBar(
                     color = awayTeamColor
                 )
         )
+
         Box(
             modifier = modifier
                 .weight(maxOf(homePercent, 10f))
@@ -385,6 +431,20 @@ fun PredictedWinPercentageBar(
 }
 
 /**
+ * Purpose - score - display a score value as a string
+ * @param score: The score to display
+ * @return Unit
+ */
+@Composable
+fun Score(score: String) {
+    Text(
+        text = score,
+        fontSize = 44.sp,
+        fontWeight = FontWeight.ExtraBold
+    )
+}
+
+/**
  * Purpose - get formatted start date time string - formats game start time from utc to local time
  * @param utcString: The game start time in utc as a string
  * @return String: The formatted game start time
@@ -393,5 +453,6 @@ fun PredictedWinPercentageBar(
 private fun getFormattedStartDateTimeString(utcString: String): String {
     val instant = Instant.parse(utcString)
     val localDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime()
-    return localDateTime.format(DateTimeFormatter.ofPattern("EEE, MMM dd - h:mm a"))
+
+    return localDateTime.format(DateTimeFormatter.ofPattern("MMM dd, h:mm a"))
 }
