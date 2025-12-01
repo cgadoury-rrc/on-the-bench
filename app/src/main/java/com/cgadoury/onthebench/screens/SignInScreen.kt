@@ -83,7 +83,7 @@ fun SignInScreen(
         Text(
             text = "Sign in to continue",
             fontSize = 16.sp,
-            color = Color.Gray,
+            color = Color.DarkGray,
             modifier = Modifier.padding(bottom = 22.dp)
         )
 
@@ -171,7 +171,7 @@ fun SignInScreen(
             Text(
                 text = "OR",
                 modifier = Modifier.padding(horizontal = 16.dp),
-                color = Color.Gray
+                color = Color.DarkGray
             )
 
             HorizontalDivider(modifier = Modifier.weight(1f))

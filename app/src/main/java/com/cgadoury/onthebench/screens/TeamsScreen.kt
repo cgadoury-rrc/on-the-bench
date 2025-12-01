@@ -231,7 +231,7 @@ fun FavouriteTeamRow(
                     modifier = Modifier
                         .size(100.dp)
                         .clip(CircleShape)
-                        .background(teamColor!!.copy(alpha = 0.5f))
+                        .background(teamColor!!.copy(alpha = 0.8f))
                         .border(
                             BorderStroke(width = 2.dp, teamColor),
                             shape = CircleShape
@@ -255,7 +255,7 @@ fun FavouriteTeamRow(
                     text = team.teamName.default.split(" ").last(),
                     fontSize = 14.sp,
                     letterSpacing = 2.sp,
-                    color = Color.Gray
+                    color = Color.DarkGray
                 )
             }
         }

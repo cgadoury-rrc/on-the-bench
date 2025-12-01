@@ -347,7 +347,7 @@ fun TeamStatCard(
         }
         val homeStatData = listOf(
             StatData(
-                label = "Win %",
+                label = "Home Win %",
                 value = "${homeWinPctg.toInt()}%",
                 isGood = homeWinPctg.toInt() > 49.5
             ),
@@ -381,7 +381,7 @@ fun TeamStatCard(
         }
         val awayStatData: List<StatData> = listOf(
             StatData(
-                label = "Win %",
+                label = "Away Win %",
                 value = "${100 - homeWinPctg.toInt()}%",
                 isGood = 100 - homeWinPctg.toInt() > 49.5
             ),
@@ -452,7 +452,7 @@ fun RosterPlayerRow(
             Text(
                 text = "#${rosterPlayer.sweaterNumber} - ${rosterPlayer.positionCode}",
                 fontSize = 12.sp,
-                color = Color.Gray
+                color = Color.DarkGray
             )
         }
     }

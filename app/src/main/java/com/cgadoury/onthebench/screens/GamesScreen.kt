@@ -35,6 +35,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -246,7 +248,10 @@ fun TeamScore(
     isScoreOnLeft: Boolean
 ): Unit {
     if (isScoreOnLeft) {
-        Score(score = score)
+        Score(
+            score = score,
+            teamAbbrev = abbrev
+        )
     }
 
     Column(
@@ -255,7 +260,7 @@ fun TeamScore(
         Text(
             text = abbrev,
             fontWeight = FontWeight.SemiBold,
-            color = Color.Gray
+            color = Color.DarkGray
         )
         AsyncImage(
             modifier = Modifier
@@ -264,13 +269,16 @@ fun TeamScore(
                 LocalContext.current
             ).data(logo)
                 .build(),
-            contentDescription = "Team Logo",
+            contentDescription = "$abbrev Logo",
             imageLoader = loadSvgImage(context = LocalContext.current)
         )
     }
 
     if (!isScoreOnLeft) {
-        Score(score = score)
+        Score(
+            score = score,
+            teamAbbrev = abbrev
+        )
     }
 }
 
@@ -293,7 +301,13 @@ fun GameInfoRow(game: Game): Unit {
             text = getFormattedStartDateTimeString(utcString = startTime),
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
-            color = Color.DarkGray
+            color = Color.DarkGray,
+            modifier = Modifier.semantics {
+                val timeString = getFormattedStartDateTimeString(utcString = startTime)
+                val awayTeam = game.awayTeam?.name ?: "Away team"
+                val homeTeam = game.homeTeam?.name ?: "Home team"
+                contentDescription = "Game time: $timeString, $awayTeam at $homeTeam"
+            }
         )
 
         game.gameState?.let {
@@ -301,12 +315,17 @@ fun GameInfoRow(game: Game): Unit {
                 shape = RoundedCornerShape(12.dp),
                 color = Color.LightGray.copy(alpha = 0.4f)
             ) {
+                val state = game.gameState
                 Text(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    text = if (game.gameState == "OFF") "FINAL" else it,
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .semantics {
+                            contentDescription = "${game.id} state: $state"
+                        },
+                    text = if (state == "OFF") "FINAL" else it,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = if (game.gameState == "LIVE") Color.Red else Color.DarkGray,
+                    color = if (state == "LIVE") Color.Red else Color.DarkGray,
                 )
             }
         }
@@ -343,13 +362,16 @@ fun GameScoreClock(
             Text(
                 text = game.clock?.timeRemaining.toString(),
                 fontSize = 12.sp,
-                color = Color.Gray
+                color = Color.DarkGray
             )
         } else {
             Text(
                 text="VS",
                 fontSize = 12.sp,
-                color = Color.Gray
+                color = Color.DarkGray,
+                modifier = Modifier.semantics{
+                    contentDescription = "${game.homeTeam?.name} plays against ${game.awayTeam?.name}"
+                }
             )
         }
     }
@@ -376,25 +398,24 @@ fun PredictedWinPercentageBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 14.dp, vertical = 6.dp),
+            .padding(horizontal = 14.dp, vertical = 6.dp)
+            .semantics(mergeDescendants = true) {},
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = "${awayPercent.toInt()}%",
             fontSize = 12.sp,
-            color = Color.Gray
+            color = Color.DarkGray
         )
-
         Text(
             text = "Win-O-Meter",
             fontSize = 12.sp,
-            color = Color.Gray
+            color = Color.DarkGray,
         )
-
         Text(
             text = "${homePercent.toInt()}%",
             fontSize = 12.sp,
-            color = Color.Gray
+            color = Color.DarkGray
         )
     }
 
@@ -427,11 +448,17 @@ fun PredictedWinPercentageBar(
  * @return Unit
  */
 @Composable
-fun Score(score: String) {
+fun Score(
+    score: String,
+    teamAbbrev: String
+) {
     Text(
         text = score,
         fontSize = 44.sp,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.semantics {
+            contentDescription = "$teamAbbrev score: $score"
+        }
     )
 }
 
