@@ -335,19 +335,16 @@ fun GameScoreClock(
                 gamePeriod == 5 -> "SO"
                 else -> "P: $gamePeriod"
             }
-
             Text(
                 text = period,
                 fontSize = 12.sp,
                 color = Color.Gray
             )
-
             Text(
                 text = game.clock?.timeRemaining.toString(),
                 fontSize = 12.sp,
                 color = Color.Gray
             )
-
         } else {
             Text(
                 text="VS",
@@ -404,28 +401,22 @@ fun PredictedWinPercentageBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp)
             .height(12.dp)
+            .padding(horizontal = 12.dp)
             .clip(RoundedCornerShape(8.dp)),
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-
         Box(
             modifier = modifier
+                .fillMaxHeight()
+                .background(color = awayTeamColor)
                 .weight(maxOf(awayPercent, 10f))
-                .fillMaxHeight()
-                .background(
-                    color = awayTeamColor
-                )
         )
-
         Box(
             modifier = modifier
-                .weight(maxOf(homePercent, 10f))
                 .fillMaxHeight()
-                .background(
-                    color = homeTeamColor
-                )
+                .background(color = homeTeamColor)
+                .weight(maxOf(homePercent, 10f))
         )
     }
 }
