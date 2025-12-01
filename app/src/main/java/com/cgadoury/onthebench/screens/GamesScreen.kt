@@ -149,7 +149,7 @@ fun GameDayTab(
                 navController = navController
             )
 
-            HorizontalDivider(modifier = modifier.padding(horizontal = 12.dp, vertical = 24.dp))
+            HorizontalDivider(modifier = modifier.padding(horizontal = 12.dp, vertical = 20.dp))
         }
     }
 }
