@@ -431,7 +431,7 @@ fun Score(score: String) {
     Text(
         text = score,
         fontSize = 44.sp,
-        fontWeight = FontWeight.ExtraBold
+        fontWeight = FontWeight.Bold
     )
 }
 
