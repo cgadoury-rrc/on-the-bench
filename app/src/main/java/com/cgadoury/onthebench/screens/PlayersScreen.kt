@@ -290,4 +290,3 @@ fun FavouritePlayerRow(
         }
     }
 }
-
