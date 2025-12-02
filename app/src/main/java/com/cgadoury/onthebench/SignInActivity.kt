@@ -12,6 +12,10 @@ import androidx.compose.ui.Modifier
 import com.cgadoury.onthebench.screens.SignInScreen
 import com.cgadoury.onthebench.ui.theme.OnTheBenchTheme
 
+/**
+ * Purpose - sign in activity - handles user authentication for the app
+ * inherits from component activity
+ */
 class SignInActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

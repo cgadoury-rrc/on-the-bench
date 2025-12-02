@@ -12,6 +12,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.cgadoury.onthebench.api.model.stat.StatData
 
+/**
+ * Purpose - stat card row - displays a row of stat cards
+ * @param modifier: The application modifier
+ * @param title: The title of the stat card row
+ * @param stats: A list of stat data to display
+ * @return Unit
+ */
 @Composable
 fun StatCardRow(
     modifier: Modifier,

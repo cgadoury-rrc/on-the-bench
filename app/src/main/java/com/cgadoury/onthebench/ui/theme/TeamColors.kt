@@ -2,6 +2,9 @@ package com.cgadoury.onthebench.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+/**
+ * An object that maps a team abbreviation to their hex color value
+ */
 object TeamColors {
     val colors: Map<String, Color> = mapOf(
         "ANA" to Color(0xFFF95602),

@@ -203,6 +203,13 @@ fun TeamCard(
     }
 }
 
+/**
+ * Purpose - favourite team row - displays favourite teams in rows of 3
+ * @param modifier: The application modifier
+ * @param favouriteTeams: A list of favourite teams
+ * @param navController: The application navigation controller
+ * @return Unit
+ */
 @Composable
 fun FavouriteTeamRow(
     modifier: Modifier,
