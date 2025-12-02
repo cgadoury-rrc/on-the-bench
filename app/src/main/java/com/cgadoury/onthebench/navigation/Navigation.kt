@@ -1,21 +1,15 @@
 package com.cgadoury.onthebench.navigation
 
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.compose.material3.Text
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.capitalize
 import androidx.wear.compose.navigation.currentBackStackEntryAsState
 import com.cgadoury.onthebench.R
 import com.cgadoury.onthebench.destinations.Destination
-import java.util.Locale
-import java.util.Locale.getDefault
 
 /**
  * Purpose - bottom nav bar - handle main navigation and display navigation bar

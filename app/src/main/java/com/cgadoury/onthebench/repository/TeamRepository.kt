@@ -2,7 +2,6 @@ package com.cgadoury.onthebench.repository
 
 import com.cgadoury.onthebench.api.model.roster.RosterData
 import com.cgadoury.onthebench.api.model.standing.Standing
-import com.cgadoury.onthebench.api.model.standing.TeamAbbrev
 
 interface TeamRepository {
 

@@ -45,8 +45,6 @@ import com.cgadoury.onthebench.mvvm.PlayersViewModel
 import com.cgadoury.onthebench.repository.GameRepository
 import com.cgadoury.onthebench.repository.GameRepositoryImpl
 import com.cgadoury.onthebench.screens.PlayerDetailScreen
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 /**

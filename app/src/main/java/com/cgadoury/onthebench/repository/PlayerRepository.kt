@@ -2,9 +2,6 @@ package com.cgadoury.onthebench.repository
 
 import com.cgadoury.onthebench.api.model.player.Player
 import com.cgadoury.onthebench.api.model.point.Point
-import com.cgadoury.onthebench.api.model.point.PointsData
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.flow.Flow
 
 interface PlayerRepository {
 
