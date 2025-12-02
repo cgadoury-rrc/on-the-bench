@@ -357,7 +357,7 @@ fun GameScoreClock(
             Text(
                 text = period,
                 fontSize = 12.sp,
-                color = Color.Gray
+                color = Color.DarkGray
             )
             Text(
                 text = game.clock?.timeRemaining.toString(),
