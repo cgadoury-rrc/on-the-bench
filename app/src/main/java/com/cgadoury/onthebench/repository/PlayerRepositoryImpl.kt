@@ -45,7 +45,7 @@ class PlayerRepositoryImpl(
         val currentTime = System.currentTimeMillis()
         val isPlayerExpired =
             player?.lastUpdated == null
-                    || currentTime - player.lastUpdated > 43200000L
+                    || currentTime - player.lastUpdated > 14400000L
 
         if (player == null || isPlayerExpired) {
             try {
