@@ -77,10 +77,6 @@ fun GamesScreen(
     val tabs = listOf("Yesterday", "Today", "Tomorrow")
     var selectedTabIndex by remember { mutableStateOf(1) }
 
-    Box(
-        modifier = modifier.fillMaxSize()
-    )
-
     Column {
         TabRow(selectedTabIndex = selectedTabIndex) {
             tabs.forEachIndexed { index, title ->

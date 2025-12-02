@@ -65,11 +65,9 @@ fun TeamsScreen(
     val favouriteTeams by teamsViewModel.favouriteTeamsResponse
     val hasFavourites = !favouriteTeams.isEmpty()
 
-    Box(
+    LazyColumn(
         modifier = modifier.fillMaxSize()
-    )
-
-    LazyColumn {
+    ) {
         item {
             Text(
                 modifier = Modifier

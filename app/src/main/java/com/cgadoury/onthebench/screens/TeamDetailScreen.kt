@@ -75,8 +75,7 @@ fun TeamDetailScreen(
     val isIconChanged = iconState[teamAbbrev] ?: team.isFavourite
 
     LazyColumn(
-        modifier = modifier
-            .fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
     ) {
         item {
             TeamHeader(

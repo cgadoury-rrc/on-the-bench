@@ -65,11 +65,9 @@ fun PlayersScreen(
     val favouritePlayers by playersViewModel.favouritePlayersResponse
     val hasFavourites = !favouritePlayers.isEmpty()
 
-    Box(
+    LazyColumn(
         modifier = modifier.fillMaxSize()
-    )
-
-    LazyColumn {
+    ) {
         item {
             Text(
                 modifier = Modifier
